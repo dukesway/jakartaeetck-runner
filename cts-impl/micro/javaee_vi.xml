@@ -148,7 +148,6 @@
         <ant antfile="s1as.xml" dir=".." target="filter.password.file"/>
         <!-- <antcall target="delete.cts.ext.jars"/> -->
         <antcall target="clean.das"/>
-        <antcall target="clean.remoteInstance"/>
         <ant antfile="s1as.xml" dir=".." target="restart.server"/>
    </target>
 	
@@ -165,16 +164,6 @@
        <ant antfile="s1as.xml" dir=".." target="${cleanTarget}"/>
    </target>
 
-   <!--
-        Remove Configuration of a remote instance(SE/EE) for CTS
-   -->
-   <target name="clean.remoteInstance" if="testingAgainstRemoteInstance" depends="use.jms,no.jms">
-       <echo message="****Removing CTS configuration for SE/EE *****" />
-       <ant antfile="sjsas_ee.xml" dir="${bin.dir}/xml" target="clean.remoteInstance">
-          <property name="cleanTarget" value="${cleanTarget}"/>
-       </ant>
-   </target>
-
 
    <!--  Target to shutdown the Java EE app server under test -->
 
@@ -182,14 +171,6 @@
        <antcall target="stop.remoteInstance"/>
        <echo message="****Stopping the domain under test *****" />
        <ant antfile="s1as.xml" dir=".." target="stop-domain"/>
-   </target>
-
-   <!--
-        Shutdown the remote instance(SE/EE) for CTS
-   -->
-   <target name="stop.remoteInstance" if="testingAgainstRemoteInstance" >
-       <echo message="****Stopping the Remote Instance under test *****" />
-       <ant antfile="sjsas_ee.xml" dir="${bin.dir}/xml" target="stop.remoteInstance"/>
    </target>
 
    <!-- Change the JDBC resource under test  -->

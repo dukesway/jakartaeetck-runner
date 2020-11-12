@@ -552,15 +552,17 @@ if [[ "securityapi" == ${test_suite} ]]; then
 fi
 
 ### start PAYARA with arguments ###
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set configs.config.server-config.java-config.debug-enabled=${PAYARA_DEBUG}
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} rotate-log
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain --debug=${PAYARA_DEBUG} --verbose=${PAYARA_VERBOSE} &
+if [ ! "${RUN_MICRO}" == "true" ]; then
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} set configs.config.server-config.java-config.debug-enabled=${PAYARA_DEBUG}
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} rotate-log
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain --debug=${PAYARA_DEBUG} --verbose=${PAYARA_VERBOSE} &
 
-# yield to allow to roll the file depending on logging configuration
-sleep 5;
-# Wait for the Payara Server [version] #badassfish startup message in server.log
-timeout 30 grep -q '\[NCLS\-CORE\-00017\]' <(tail -n 100000 -F "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/logs/server.log")
+  # yield to allow to roll the file depending on logging configuration
+  sleep 5;
+  # Wait for the Payara Server [version] #badassfish startup message in server.log
+  timeout 30 grep -q '\[NCLS\-CORE\-00017\]' <(tail -n 100000 -F "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/logs/server.log")
+fi
 
 if [[ "${PAYARA_DEBUG}" == "true" ]]; then
   echo "********************************************************************************";
