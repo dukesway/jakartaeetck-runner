@@ -91,6 +91,10 @@ echo "Patching ts.jte"
 
 apply_overrides
 
+if [ "${RUN_MICRO}" == "true" ]; then
+    apply_micro_overrides
+fi
+
 echo "Comparison with ts.jte of original distribution:"
 diff $WORKSPACE/bin/ts.jte $CTS_HOME/ts.jte.dist
 

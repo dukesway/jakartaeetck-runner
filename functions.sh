@@ -37,9 +37,13 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
     sed -E -f $OVERRIDE_TEMP -i $WORKSPACE/bin/ts.jte
     echo "Changed $WORKSPACE/bin/ts.jte"
     rm $OVERRIDE_TEMP
+}
 
-    if [ ! "${RUN_MICRO}" == "true"]; then
-        sed -n -E '
+apply_micro_overrides() {
+    OVERRIDE_TEMP=`mktemp`
+    ## We create a sed program, that we'll execute against ts.jte.
+    # TODO: Non-matching single-line / multiline replacements
+    sed -n -E '
 # single-line to single-line rewrite - create a simple s#prop=anything#prop=override#
 s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
 # mutli-line to multi-line rewrite - create a c command for range
@@ -55,10 +59,10 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
     p
 }
 ' ts.micro.override.properties > $OVERRIDE_TEMP
-        sed -E -f $OVERRIDE_TEMP -i $WORKSPACE/bin/ts.jte
-        echo "Changed $WORKSPACE/bin/ts.jte"
-        rm $OVERRIDE_TEMP
-    fi
+    cat $OVERRIDE_TEMP
+    sed -E -f $OVERRIDE_TEMP -i $WORKSPACE/bin/ts.jte
+    echo "Changed $WORKSPACE/bin/ts.jte"
+    rm $OVERRIDE_TEMP
 }
 
 init_urls () {
