@@ -78,7 +78,7 @@ init_urls () {
         PAYARA_URL=$BASE_URL/payara-prerelease.zip
     fi
     if [ -z "$PAYARA_MICRO_URL" ]; then
-        PAYARA_MICRO_URL=$BASE_URL/payara-micro-prerelease.zip
+        PAYARA_MICRO_URL=$BASE_URL/payara-micro-prerelease.jar
     fi
     if [ -z "$PAYARA_MICRO_COMMAND_RUNNER_URL" ]; then
         PAYARA_MICRO_COMMAND_RUNNER_URL=$BASE_URL/payara-micro-command-runner.jar
