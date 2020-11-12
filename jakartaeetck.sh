@@ -323,7 +323,7 @@ else
 
   chmod -R 777 ${CTS_HOME}/payara-micro.jar
   chmod -R 777 ${CTS_HOME}/payara-micro-command-runner.jar
-  $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi/micro --warmup --nocluster
+  $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi --warmup --nocluster
   chmod -R 777 ${CTS_HOME}/vi
 
   if [ ! -d "${CTS_HOME}/vi/runtime" ]; then
