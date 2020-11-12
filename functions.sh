@@ -38,7 +38,7 @@ s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p
     echo "Changed $WORKSPACE/bin/ts.jte"
     rm $OVERRIDE_TEMP
 
-    if [ "${RUN_MICRO}" = true ]; then
+    if [ ! "${RUN_MICRO}" == "true"]; then
         sed -n -E '
 # single-line to single-line rewrite - create a simple s#prop=anything#prop=override#
 s/^([[:alnum:].]+)=(.+[^\\])$/s#^\1=.+#\1=\2#/p

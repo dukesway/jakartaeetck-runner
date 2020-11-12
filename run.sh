@@ -78,7 +78,7 @@ fi
 # link VI impl
 rm -rf $WORKSPACE/bin/xml/impl/payara
 
-if [ "${RUN_MICRO}" = true ]; then
+if [ ! "${RUN_MICRO}" == "true" ]; then
   ln -s $SCRIPTPATH/cts-impl/server $WORKSPACE/bin/xml/impl/payara
 else
   ln -s $SCRIPTPATH/cts-impl/micro $WORKSPACE/bin/xml/impl/payara
@@ -125,7 +125,7 @@ export LANG="en_US.UTF-8"
 export GF_BUNDLE_URL=$GLASSFISH_URL
 export DATABASE=JavaDB
 export RUN_MICRO=$RUN_MICRO
-if [ "${RUN_MICRO}" = true ]; then
+if [ ! "${RUN_MICRO}" == "true" ]; then
   export GF_VI_BUNDLE_URL=$PAYARA_URL
   export GF_VI_TOPLEVEL_DIR=payara5
 else

@@ -229,7 +229,7 @@ mkdir -p ${CTS_HOME}/vi
 
 wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
 
-if [ "${RUN_MICRO}" = false ]; then
+if [ ! "${RUN_MICRO}" == "true" ]; then
   echo "RUN_MICRO not set, installing and running against Payara Server"
 
   if [ -z "${GF_VI_BUNDLE_URL}" ]; then
@@ -364,7 +364,7 @@ killjava "$JAVA_HOME_VI/bin/java"
 
 ##### configVI.sh starts here #####
 
-if [ "${RUN_MICRO}" = false ]; then
+if [ ! "${RUN_MICRO}" == "true" ]; then
   export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/modules/endorsed \
   -Djavax.xml.accessExternalStylesheet=all \
   -Djavax.xml.accessExternalSchema=all \
@@ -432,7 +432,7 @@ sed -i 's/^ri.admin.passwd=.*/ri.admin.passwd=adminadmin/g' ts.jte
 sed -i 's/^jdbc.maxpoolsize=.*/jdbc.maxpoolsize=30/g' ts.jte
 sed -i 's/^jdbc.steadypoolsize=.*/jdbc.steadypoolsize=5/g' ts.jte
 
-if [ "${RUN_MICRO}" = false ]; then
+if [ ! "${RUN_MICRO}" == "true" ]; then
   sed -i "s#^javaee.home=.*#javaee.home=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish#g" ts.jte
 else
   sed -i "s#^javaee.home=.*#javaee.home=${CTS_HOME}/vi#g" ts.jte
@@ -482,7 +482,7 @@ if [ ! -z "${DATABASE}" ];then
   fi
 fi
 
-if [ "${RUN_MICRO}" = false ]; then
+if [ ! "${RUN_MICRO}" == "true" ]; then
   VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/server.policy
 else
   VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/config/server.policy
@@ -639,7 +639,7 @@ else
   mv ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml  ${WORKSPACE}/results/junitreports/${TEST_SUITE}_${vehicle_name}-junit-report.xml
 fi
 
-if [ "${RUN_MICRO}" = false ]; then
+if [ ! "${RUN_MICRO}" == "true" ]; then
   tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
 else
   tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/
