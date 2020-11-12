@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lib1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../JakartaEE-TCK/src/web/jstl/compat/onedotzero/WEB-INF/lib/jstltck_1_0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../JakartaEE-TCK/src/web/jstl/compat/onedotzero/WEB-INF/lib/jstltcktlv_1_0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

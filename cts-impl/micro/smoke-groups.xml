@@ -16,7 +16,7 @@
 
 -->
 
-<project name="smoke-groups" basedir="." default="usage">
+<project name="smoke-groups" basedir=".." default="usage">
 
     <!-- IMPORTS -->
     <import file="./ts.common.props.xml" optional="true"/>

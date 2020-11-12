@@ -9,6 +9,8 @@ cd `dirname $0`
 check_present jakartaeetck.zip
 check_present latest-glassfish.zip
 check_present payara-prerelease.zip
+check_present payara-micro-prerelease.jar
+check_present send-asadmin-command-runner.jar
 check_present cdi-tck-2.0.6-dist.zip
 check_present jakarta.inject-tck-1.0-bin.zip
 check_present javadb.zip

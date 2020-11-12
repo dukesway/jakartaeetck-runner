@@ -224,77 +224,139 @@ echo "Java home for VI: $JAVA_HOME_VI"
 
 ##### installVI.sh starts here #####
 
-if [ -z "${GF_VI_BUNDLE_URL}" ]; then
-    echo "Using GF_BUNDLE_URL for GF VI bundle: $GF_BUNDLE_URL"
-    export GF_VI_BUNDLE_URL=$GF_BUNDLE_URL
-fi
-
-if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
-    echo "Using glassfish5 for GF_VI_TOPLEVEL_DIR"
-    export GF_VI_TOPLEVEL_DIR=glassfish5
-fi
-
-if [[ -z "${PAYARA_VERSION}" ]]; then
-    wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish-vi.zip
-else
-    mvn dependency:copy \
-    -Dartifact=fish.payara.distributions:payara:$PAYARA_VERSION:zip \
-    -Dmdep.stripVersion=true \
-    -DoutputDirectory=${CTS_HOME}
-    mv ${CTS_HOME}/payara.zip ${CTS_HOME}/latest-glassfish-vi.zip
-fi
-
 rm -Rf ${CTS_HOME}/vi
 mkdir -p ${CTS_HOME}/vi
-unzip -q ${CTS_HOME}/latest-glassfish-vi.zip -d ${CTS_HOME}/vi
-chmod -R 777 ${CTS_HOME}/vi
-
-if [ ! -d "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR" ]; then
-  echo "VI toplevel directory ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR does not exists or is not a directory"
-  exit 1
-fi
 
 wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
 
-echo -n "Unzipping JavaDB... "
-unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
-cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
-rm ${CTS_HOME}/javadb.zip
+if [ "${RUN_MICRO}" = false ]; then
+  echo "RUN_MICRO not set, installing and running against Payara Server"
 
-wget --progress=bar:force --no-cache $EJBTIMER_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/ejbtimer_derby.sql
-wget --progress=bar:force --no-cache $JSR352_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/jsr352-derby.sql
+  if [ -z "${GF_VI_BUNDLE_URL}" ]; then
+    echo "Using GF_BUNDLE_URL for GF VI bundle: $GF_BUNDLE_URL"
+    export GF_VI_BUNDLE_URL=$GF_BUNDLE_URL
+  fi
 
-if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
-  echo "Using higher JVM memory for EJB Lite suites to avoid OOM errors"
-  sed -i 's/-Xmx512m/-Xmx4096m/g' ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/domain.xml
-  sed -i 's/-Xmx1024m/-Xmx4096m/g' ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/domain.xml
-  sed -i 's/-Xmx512m/-Xmx2048m/g' ${CTS_HOME}/ri/glassfish5/glassfish/domains/domain1/config/domain.xml
-  sed -i 's/-Xmx1024m/-Xmx2048m/g' ${CTS_HOME}/ri/glassfish5/glassfish/domains/domain1/config/domain.xml
- 
-  # Change the memory setting in ts.jte as well.
-  sed -i 's/-Xmx1024m/-Xmx4096m/g' ${TS_HOME}/bin/ts.jte
-fi 
+  if [ -z "${GF_VI_TOPLEVEL_DIR}" ]; then
+      echo "Using glassfish5 for GF_VI_TOPLEVEL_DIR"
+      export GF_VI_TOPLEVEL_DIR=glassfish5
+  fi
 
-echo "AS_JAVA=$JAVA_HOME_VI" >> ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/config/asenv.conf;
-if [ -n "${PAYARA_LOGGING_PROPERTIES}" ]; then
-  echo "Using logging configuration: ${PAYARA_LOGGING_PROPERTIES}";
-  cp "${PAYARA_LOGGING_PROPERTIES}" "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/logging.properties";
-fi
-if [[ -z "${PAYARA_DEBUG}" ]]; then
-  export PAYARA_DEBUG=false;
-fi
-if [ -z "${PAYARA_VERBOSE}" ]; then
-  export PAYARA_VERBOSE=false;
-fi
-if [[ -z "${HARNESS_DEBUG}" ]]; then
-  export HARNESS_DEBUG=false;
-fi
+  if [[ -z "${PAYARA_VERSION}" ]]; then
+      wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/latest-glassfish-vi.zip
+  else
+      mvn dependency:copy \
+      -Dartifact=fish.payara.distributions:payara:$PAYARA_VERSION:zip \
+      -Dmdep.stripVersion=true \
+      -DoutputDirectory=${CTS_HOME}
+      mv ${CTS_HOME}/payara.zip ${CTS_HOME}/latest-glassfish-vi.zip
+  fi
 
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Djava.security.manager
-${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+  unzip -q ${CTS_HOME}/latest-glassfish-vi.zip -d ${CTS_HOME}/vi
+  chmod -R 777 ${CTS_HOME}/vi
+
+  if [ ! -d "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR" ]; then
+    echo "VI toplevel directory ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR does not exists or is not a directory"
+    exit 1
+  fi
+
+  echo -n "Unzipping JavaDB... "
+  unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR
+  cp $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derbyclient.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/javadb/lib/derby.jar $CTS_HOME/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib
+  rm ${CTS_HOME}/javadb.zip
+
+  wget --progress=bar:force --no-cache $EJBTIMER_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/ejbtimer_derby.sql
+  wget --progress=bar:force --no-cache $JSR352_DERBY_SQL -O ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/lib/install/databases/jsr352-derby.sql
+
+  if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
+    echo "Using higher JVM memory for EJB Lite suites to avoid OOM errors"
+    sed -i 's/-Xmx512m/-Xmx4096m/g' ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/domain.xml
+    sed -i 's/-Xmx1024m/-Xmx4096m/g' ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/domain.xml
+    sed -i 's/-Xmx512m/-Xmx2048m/g' ${CTS_HOME}/ri/glassfish5/glassfish/domains/domain1/config/domain.xml
+    sed -i 's/-Xmx1024m/-Xmx2048m/g' ${CTS_HOME}/ri/glassfish5/glassfish/domains/domain1/config/domain.xml
+
+    # Change the memory setting in ts.jte as well.
+    sed -i 's/-Xmx1024m/-Xmx4096m/g' ${TS_HOME}/bin/ts.jte
+  fi
+
+  echo "AS_JAVA=$JAVA_HOME_VI" >> ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/config/asenv.conf;
+  if [ -n "${PAYARA_LOGGING_PROPERTIES}" ]; then
+    echo "Using logging configuration: ${PAYARA_LOGGING_PROPERTIES}";
+    cp "${PAYARA_LOGGING_PROPERTIES}" "${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/logging.properties";
+  fi
+  if [[ -z "${PAYARA_DEBUG}" ]]; then
+    export PAYARA_DEBUG=false;
+  fi
+  if [ -z "${PAYARA_VERBOSE}" ]; then
+    export PAYARA_VERBOSE=false;
+  fi
+  if [[ -z "${HARNESS_DEBUG}" ]]; then
+    export HARNESS_DEBUG=false;
+  fi
+
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${CTS_HOME}/change-admin-password.txt change-admin-password
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} start-domain
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} version
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Djava.security.manager
+  ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
+else
+  echo "RUN_MICRO set, installing and running against Payara Micro"
+
+  if [[ -z "${PAYARA_VERSION}" ]]; then
+      wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/payara-micro.jar
+  else
+      mvn dependency:copy \
+      -Dartifact=fish.payara.extras:payara-micro:$PAYARA_VERSION:jar \
+      -Dmdep.stripVersion=true \
+      -DoutputDirectory=${CTS_HOME}
+  fi
+
+  if [[ -z "${COMMAND_RUNNER_VERSION}" ]]; then
+      wget --progress=bar:force --no-cache $PAYARA_MICRO_COMMAND_RUNNER_URL -O ${CTS_HOME}/micro-command-runner.jar
+  else
+      mvn dependency:copy \
+      -Dartifact=fish.payara.jakartaee.tck:send-asadmin-command-runner:$COMMAND_RUNNER_VERSION:jar \
+      -Dmdep.stripVersion=true \
+      -DoutputDirectory=${CTS_HOME}
+      mv ${CTS_HOME}/send-asadmin-command-runner.jar ${CTS_HOME}/micro-command-runner.jar
+  fi
+
+  chmod -R 777 ${CTS_HOME}/payara-micro.jar
+  chmod -R 777 ${CTS_HOME}/micro-command-runner.jar
+  $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi/micro --warmup --nocluster
+  chmod -R 777 ${CTS_HOME}/vi
+
+  if [ ! -d "${CTS_HOME}/vi/runtime" ]; then
+    echo "Expected VI directory ${CTS_HOME}/vi/runtime does not exist or is not a directory"
+    exit 1
+  fi
+
+  echo -n "Unzipping JavaDB... "
+  unzip -q -o ${CTS_HOME}/javadb.zip -d $CTS_HOME/vi
+  cp $CTS_HOME/vi/javadb/lib/derbyclient.jar $CTS_HOME/vi/javadb/lib/derby.jar $CTS_HOME/vi/lib
+  rm ${CTS_HOME}/javadb.zip
+
+  wget --progress=bar:force --no-cache $EJBTIMER_DERBY_SQL -O ${CTS_HOME}/vi/lib/install/databases/ejbtimer_derby.sql
+  wget --progress=bar:force --no-cache $JSR352_DERBY_SQL -O ${CTS_HOME}/vi/lib/install/databases/jsr352-derby.sql
+
+  if [[ $test_suite == ejb30/lite* ]] || [[ "ejb30" == $test_suite ]] ; then
+    echo "Using higher JVM memory for EJB Lite suites to avoid OOM errors"
+
+    # Change the memory setting in ts.jte as well.
+    sed -i 's/-Xmx1024m/-Xmx4096m/g' ${TS_HOME}/bin/ts.jte
+  fi
+
+  if [ -n "${PAYARA_LOGGING_PROPERTIES}" ]; then
+    echo "Using logging configuration: ${PAYARA_LOGGING_PROPERTIES}";
+    cp "${PAYARA_LOGGING_PROPERTIES}" "${CTS_HOME}/vi/config/logging.properties";
+  fi
+  if [[ -z "${PAYARA_DEBUG}" ]]; then
+    export PAYARA_DEBUG=false;
+  fi
+  if [[ -z "${HARNESS_DEBUG}" ]]; then
+    export HARNESS_DEBUG=false;
+  fi
+fi
 
 sleep 5
 killjava "$JAVA_HOME_VI/bin/java"
@@ -302,11 +364,19 @@ killjava "$JAVA_HOME_VI/bin/java"
 
 ##### configVI.sh starts here #####
 
-export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/modules/endorsed \
--Djavax.xml.accessExternalStylesheet=all \
--Djavax.xml.accessExternalSchema=all \
--Djavax.xml.accessExternalDTD=file,http \
-"
+if [ "${RUN_MICRO}" = false ]; then
+  export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/modules/endorsed \
+  -Djavax.xml.accessExternalStylesheet=all \
+  -Djavax.xml.accessExternalSchema=all \
+  -Djavax.xml.accessExternalDTD=file,http \
+  "
+else
+  export CTS_ANT_OPTS="-Djava.endorsed.dirs=${CTS_HOME}/vi/runtime/endorsed \
+  -Djavax.xml.accessExternalStylesheet=all \
+  -Djavax.xml.accessExternalSchema=all \
+  -Djavax.xml.accessExternalDTD=file,http \
+  "
+fi
 
 if [[ "$PROFILE" == "web" || "$PROFILE" == "WEB" ]];then
   KEYWORDS="javaee_web_profile|jacc_web_profile|jaspic_web_profile|javamail_web_profile|connector_web_profile"
@@ -362,7 +432,12 @@ sed -i 's/^ri.admin.passwd=.*/ri.admin.passwd=adminadmin/g' ts.jte
 sed -i 's/^jdbc.maxpoolsize=.*/jdbc.maxpoolsize=30/g' ts.jte
 sed -i 's/^jdbc.steadypoolsize=.*/jdbc.steadypoolsize=5/g' ts.jte
 
-sed -i "s#^javaee.home=.*#javaee.home=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish#g" ts.jte
+if [ "${RUN_MICRO}" = false ]; then
+  sed -i "s#^javaee.home=.*#javaee.home=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish#g" ts.jte
+else
+  sed -i "s#^javaee.home=.*#javaee.home=${CTS_HOME}/vi#g" ts.jte
+fi
+
 sed -i 's/^orb.host=.*/orb.host=localhost/g' ts.jte
 
 sed -i "s#^javaee.home.ri=.*#javaee.home.ri=${CTS_HOME}/ri/glassfish5/glassfish#g" ts.jte
@@ -407,7 +482,12 @@ if [ ! -z "${DATABASE}" ];then
   fi
 fi
 
-VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/server.policy
+if [ "${RUN_MICRO}" = false ]; then
+  VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/config/server.policy
+else
+  VI_SERVER_POLICY_FILE=${CTS_HOME}/vi/config/server.policy
+fi
+
 echo 'grant {' >> ${VI_SERVER_POLICY_FILE}
 echo 'permission java.io.FilePermission "${com.sun.aas.instanceRoot}${/}generated${/}policy${/}-", "read,write,execute,delete";' >> ${VI_SERVER_POLICY_FILE}
 echo '};' >> ${VI_SERVER_POLICY_FILE}
@@ -558,7 +638,12 @@ else
   sed -i "s/name=\"${TEST_SUITE}\"/name=\"${TEST_SUITE}_${vehicle_name}\"/g" ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml
   mv ${WORKSPACE}/results/junitreports/${TEST_SUITE}-junit-report.xml  ${WORKSPACE}/results/junitreports/${TEST_SUITE}_${vehicle_name}-junit-report.xml
 fi
-tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
+
+if [ "${RUN_MICRO}" = false ]; then
+  tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/domains/domain1/
+else
+  tar zcf ${WORKSPACE}/${RESULT_FILE_NAME} ${CTS_HOME}/*.log ${JT_REPORT_DIR} ${JT_WORK_DIR} ${WORKSPACE}/results/junitreports/ ${CTS_HOME}/jakartaeetck/bin/ts.* ${CTS_HOME}/vi/
+fi
 
 if [ -z ${vehicle} ];then
   JUNIT_REPORT_FILE_NAME=${TEST_SUITE}-junitreports.tar.gz

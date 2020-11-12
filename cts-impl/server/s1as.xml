@@ -18,10 +18,10 @@
 
 -->
 
-<project name="CTS Glassfish AppServer configuration" basedir="." default="usage">
+<project name="CTS Glassfish AppServer configuration" basedir=".." default="usage">
 
-    <import file="./common.xml"/>
-    <import file="./deploy.xml"/>
+    <import file="common.xml"/>
+    <import file="deploy.xml"/>
  
     <property name="admin.user"      value="${s1as.admin.user}"/>
     <property name="admin.password"  value="${s1as.admin.passwd}" />
@@ -863,14 +863,14 @@
      -->
      <target name="setup.all.rars.and.pools" depends="configPlatform">
 
-       <ant antfile="./connector.xml" target="setup.all.rars.and.pools">
+       <ant antfile="connector.xml" target="setup.all.rars.and.pools">
        </ant>
 
      </target>
 
 
      <target name="undeploy.all.rars.and.pools" >
-       <ant antfile="./connector.xml" target="undeploy.all.rars.and.pools">
+       <ant antfile="connector.xml" target="undeploy.all.rars.and.pools">
        </ant>
      </target>
  

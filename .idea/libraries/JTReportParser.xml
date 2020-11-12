@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JTReportParser">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../JakartaEE-TCK/docker/JTReportParser/JTReportParser.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

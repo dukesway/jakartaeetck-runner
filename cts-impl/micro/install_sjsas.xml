@@ -36,7 +36,7 @@ The following facts makes it hard to maintain and generalize:
 (7), well, we can use pathconvert to convert a fileset to a file.
 
 -->
-<project name="install sjsas" basedir="." default="usage">
+<project name="install sjsas" basedir=".." default="usage">
   <!-- IMPORTS -->
   <import file="../../ts.common.props.xml" optional="true"/>
   <import file="../../../../bin/xml/ts.common.props.xml" optional="true"/>
@@ -215,7 +215,7 @@ The following facts makes it hard to maintain and generalize:
       <fileset dir="${copy.bundle.to}"/>
     </delete>
     <mkdir dir="${copy.bundle.to}"/>
-    <copy file="${unzip.what}" tofile="${copy.bundle.to}/bundle.zip"/>
+    <copy file="install_sjsas.xml" tofile="${copy.bundle.to}/bundle.zip"/>
     <exec executable="${unzip.command}" dir="${copy.bundle.to}">
       <arg line="bundle.zip"/>
     </exec>
@@ -232,7 +232,7 @@ The following facts makes it hard to maintain and generalize:
     If invoked directly, must set -Ds1as.installer.home={parent-dir-of-setup-script}, unless
     pwd is the s1as.installer.home">
     <chmod perm="a+rx">
-      <fileset dir="${s1as.installer.home}" includes="setup*"/>
+      <fileset dir="install_sjsas.xml" includes="setup*"/>
     </chmod>
     <echo message="Install to ${s1as.home}"/>
     <antcall target="uninstall.s1as"/>
@@ -262,7 +262,7 @@ The following facts makes it hard to maintain and generalize:
       <os family="unix"/>
     </condition>
     <property name="setup.exe" value="cmd.exe"/>
-    <exec dir="${s1as.installer.home}" executable="${setup.exe}" output="/tmp/install_sjsas.log" resultproperty="return.code">
+    <exec dir="install_sjsas.xml" executable="${setup.exe}" output="/tmp/install_sjsas.log" resultproperty="return.code">
       <arg line="${setup.arg.1}"/>
       <arg value="-silent"/>
       <arg value="${statefile}"/>
@@ -296,7 +296,7 @@ The following facts makes it hard to maintain and generalize:
      <java classname="appserv" fork="true" output="${class.id.file}" maxmemory="256m">
         <arg value="-id"/> 
         <classpath>
-          <pathelement location="${s1as.installer.home}"/>
+          <pathelement location="install_sjsas.xml"/>
         </classpath>
      </java>
      <loadfile property="class.id" srcfile="${class.id.file}">

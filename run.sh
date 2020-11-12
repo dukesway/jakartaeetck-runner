@@ -77,7 +77,14 @@ fi
 
 # link VI impl
 rm -rf $WORKSPACE/bin/xml/impl/payara
-ln -s $SCRIPTPATH/cts-impl $WORKSPACE/bin/xml/impl/payara
+
+if [ "${RUN_MICRO}" = true ]; then
+  ln -s $SCRIPTPATH/cts-impl/server $WORKSPACE/bin/xml/impl/payara
+else
+  ln -s $SCRIPTPATH/cts-impl/micro $WORKSPACE/bin/xml/impl/payara
+fi
+
+
 
 # patch ts.jte
 echo "Patching ts.jte"
@@ -117,9 +124,15 @@ export PROFILE=$PROFILE
 export LANG="en_US.UTF-8"
 export GF_BUNDLE_URL=$GLASSFISH_URL
 export DATABASE=JavaDB
-export GF_VI_BUNDLE_URL=$PAYARA_URL
+export RUN_MICRO=$RUN_MICRO
+if [ "${RUN_MICRO}" = true ]; then
+  export GF_VI_BUNDLE_URL=$PAYARA_URL
+  export GF_VI_TOPLEVEL_DIR=payara5
+else
+  export GF_VI_BUNDLE_URL=$PAYARA_MICRO_URL
+  export PAYARA_MICRO_COMMAND_RUNNER_URL=$PAYARA_MICRO_COMMAND_RUNNER_URL
+fi
 export PAYARA_VERSION=$PAYARA_VERSION
-export GF_VI_TOPLEVEL_DIR=payara5
 export DERBY_URL
 export EJBTIMER_DERBY_SQL
 export JSR352_DERBY_SQL

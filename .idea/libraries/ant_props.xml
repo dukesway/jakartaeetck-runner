@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ant-props">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../JakartaEE-TCK/docker-images/cts-base/ant-props.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

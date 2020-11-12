@@ -18,7 +18,7 @@
 
 -->
 
-<project name="Commonxml" basedir=".">
+<project name="Commonxml" basedir="..">
 
     <!-- ========================================================== -->
     <!--  CTS s1as.xml & javaee_ri.xml Common Properties & targets  -->
@@ -100,7 +100,7 @@
 
     <target name="configWindows" depends="checkPlatform" if="isWindowsPlatform" >
            <echo message="on windows"/>
-           <property name="dir.sep" value="\\"/>
+           <property name="dir.sep" value="/cts-impl/server/common.xml"/>
            <property name="exec.asadmin" value="cmd.exe" />
            <property name="exec.asadmin.part2" value= " /c ${cli.path}" />
            <property name="exec.imqusermgr" value="cmd.exe" />

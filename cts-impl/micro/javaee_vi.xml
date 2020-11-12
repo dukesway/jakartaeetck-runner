@@ -17,7 +17,7 @@
 
 -->
 
-<project name="CTS 7 for use with a vendor's Java EE implementation" basedir="." default="usage">
+<project name="CTS 7 for use with a vendor's Java EE implementation" basedir=".." default="usage">
 
     <!-- IMPORTS -->
     <import file="./ts.common.props.xml" optional="true"/>
@@ -72,7 +72,7 @@
    <!--  Target to configure the Java EE app server under test -->
    <target name="config.vi" depends="checkCTSConfiguration, update.cts.jar, copy.db.jars, copy.cts.ext.jars">
 
-       <ant antfile="s1as.xml" dir="." target="filter.password.file"/>
+       <ant antfile="s1as.xml" dir=".." target="filter.password.file"/>
        
        <!--
          Now called from here instead of from s1as.xml's add.jdbc.resources
@@ -84,13 +84,13 @@
          to see the hack. This code can be reverted once they fix bug ID 7151.
          We can go back to using the get command.
        -->
-       <ant antfile="s1as.xml" dir="." target="reset.ext.dirs"/>
-       <ant antfile="s1as.xml" dir="." target="add.ext.dirs"/>
+       <ant antfile="s1as.xml" dir=".." target="reset.ext.dirs"/>
+       <ant antfile="s1as.xml" dir=".." target="add.ext.dirs"/>
        
        <antcall target="config.das"/>
        <antcall target="config.remoteInstance"/>
 
-       <ant antfile="s1as.xml" dir="." target="restart.server"/>
+       <ant antfile="s1as.xml" dir=".." target="restart.server"/>
 
        <!-- this is used to configure connector related targets on the app server -->
        <if>
@@ -103,7 +103,7 @@
        </else>
        </if>
        
-       <ant antfile="s1as.xml" dir="." target="ping.jdbc.pool.check"/>
+       <ant antfile="s1as.xml" dir=".." target="ping.jdbc.pool.check"/>
        <ant antfile="initdb.xml" dir="${bin.dir}/xml" target="init.derbyEmbedded"/>
 
    </target>
@@ -113,12 +113,12 @@
     <!-- Configure PE for the JASPIC(JSR-196) tests -->
     <target name="config.jaspic" if="testingAgainstDAS" depends="checkCTSConfiguration, update.jaspic.jar, copy.cts.ext.jars">
         <echo message="****Configuring for JASPIC (JSR-196) tests *****" />
-        <ant antfile="s1as.xml" dir="." target="config.jaspic"/>
+        <ant antfile="s1as.xml" dir=".." target="config.jaspic"/>
     </target>
 
     <!-- convenience method to support un-configuration of jaspic -->
     <target name="unconfig.jaspic">
-        <ant antfile="s1as.xml" dir="." target="unconfig.jaspic"/>
+        <ant antfile="s1as.xml" dir=".." target="unconfig.jaspic"/>
     </target>
 
     <target name="update.jaspic.jar" depends="check.for.cts.internal.jar, update.jar"/>
@@ -129,7 +129,7 @@
    -->
    <target name="config.das" if="testingAgainstDAS" depends="use.jms,no.jms">
        <echo message="****Configuring the DAS/PE *****" />
-       <ant antfile="s1as.xml" dir="." target="${configTarget}"/>
+       <ant antfile="s1as.xml" dir=".." target="${configTarget}"/>
    </target>
 
    <!--
@@ -145,16 +145,16 @@
    <!--  Target to remove the configuration for the Java EE app server under test -->
 
    <target name="clean.vi" depends="checkCTSConfiguration">
-        <ant antfile="s1as.xml" dir="." target="filter.password.file"/>
+        <ant antfile="s1as.xml" dir=".." target="filter.password.file"/>
         <!-- <antcall target="delete.cts.ext.jars"/> -->
         <antcall target="clean.das"/>
         <antcall target="clean.remoteInstance"/>
-        <ant antfile="s1as.xml" dir="." target="restart.server"/>
+        <ant antfile="s1as.xml" dir=".." target="restart.server"/>
    </target>
 	
 	
    <target name="restart.vi" depends="checkCTSConfiguration">
-	     <ant antfile="s1as.xml" dir="." target="restart.server"/>
+	     <ant antfile="s1as.xml" dir=".." target="restart.server"/>
    </target>
 
    <!--
@@ -162,7 +162,7 @@
    -->
    <target name="clean.das" if="testingAgainstDAS" depends="use.jms,no.jms">
        <echo message="****Removing CTS configuration for DAS/PE *****" />
-       <ant antfile="s1as.xml" dir="." target="${cleanTarget}"/>
+       <ant antfile="s1as.xml" dir=".." target="${cleanTarget}"/>
    </target>
 
    <!--
@@ -181,7 +181,7 @@
    <target name="stop.vi" depends="checkCTSConfiguration">
        <antcall target="stop.remoteInstance"/>
        <echo message="****Stopping the domain under test *****" />
-       <ant antfile="s1as.xml" dir="." target="stop-domain"/>
+       <ant antfile="s1as.xml" dir=".." target="stop-domain"/>
    </target>
 
    <!--
@@ -195,8 +195,8 @@
    <!-- Change the JDBC resource under test  -->
     <target name="modify.jdbc.resources" depends="checkCTSConfiguration">
        <antcall target="copy.db.jars"/>       
-       <ant antfile="s1as.xml" dir="." target="modify.jdbc.resources"/>
-       <ant antfile="s1as.xml" dir="." target="ping.jdbc.pool"/>
+       <ant antfile="s1as.xml" dir=".." target="modify.jdbc.resources"/>
+       <ant antfile="s1as.xml" dir=".." target="ping.jdbc.pool"/>
     </target>
 
    <!--  Target to enable jacc for the Java EE app server under test -->
@@ -206,8 +206,8 @@
 
    <!--  Target to enable jacc for the DAS/PE -->
    <target name="enable.jacc.das"  >
-       <ant antfile="s1as.xml" dir="." target="enable.jacc"/>
-       <ant antfile="s1as.xml" dir="." target="restart.server"/>
+       <ant antfile="s1as.xml" dir=".." target="enable.jacc"/>
+       <ant antfile="s1as.xml" dir=".." target="restart.server"/>
    </target>
 
    <!--  Target to disable jacc for the Java EE app server under test -->
@@ -217,7 +217,7 @@
 
    <!--  Target to disable jacc for the DAS/PE -->
    <target name="disable.jacc.das"  >
-       <ant antfile="s1as.xml" dir="." target="disable.jacc"/>
+       <ant antfile="s1as.xml" dir=".." target="disable.jacc"/>
    </target>
    
    <!--  Target to disable jacc for the Java EE app server under test -->
@@ -227,7 +227,7 @@
 
    <!--  Target to disable jacc for the DAS/PE -->
    <target name="disable.wss.providers.das"  >
-       <ant antfile="s1as.xml" dir="." target="disable.wss.providers"/>
+       <ant antfile="s1as.xml" dir=".." target="disable.wss.providers"/>
    </target>
    
    <!--  Target to enable wss providers for the Java EE app server under test -->
@@ -237,8 +237,8 @@
    
    <!--  Target to enable wss providers for the DAS/PE -->
    <target name="enable.wss.providers.das"  >
-       <ant antfile="s1as.xml" dir="." target="enable.wss.providers"/>
-       <ant antfile="s1as.xml" dir="." target="restart.server"/>
+       <ant antfile="s1as.xml" dir=".." target="enable.wss.providers"/>
+       <ant antfile="s1as.xml" dir=".." target="restart.server"/>
    </target>
 
    <!--  Target to enable tx interop for the Java EE app server under test -->
@@ -249,7 +249,7 @@
 
    <!--  Target to enable tx interop for the PE/DAS -->
    <target name="enable.tx.interop.das"  if="testingAgainstDAS">
-       <ant antfile="s1as.xml" dir="." target="enable.tx.interop"/>
+       <ant antfile="s1as.xml" dir=".." target="enable.tx.interop"/>
    </target>
 
    <!--  Target to enable tx interop for RemoteInstance -->
@@ -265,7 +265,7 @@
 
    <!--  Target to disable tx interop for the PE/DAS -->
    <target name="disable.tx.interop.das"  if="testingAgainstDAS">
-       <ant antfile="s1as.xml" dir="." target="disable.tx.interop"/>
+       <ant antfile="s1as.xml" dir=".." target="disable.tx.interop"/>
    </target>
 
    <!--  Target to disable tx interop for RemoteInstance -->
@@ -380,20 +380,20 @@
 
    <!--  Add the certificates needed for interop to the RI and SJSAS -->
    <target name="add.interop.certs" depends="checkCTSConfiguration">
-       <ant antfile="s1as.xml" dir="." target="add.interop.certs"/>
+       <ant antfile="s1as.xml" dir=".." target="add.interop.certs"/>
        <antcall target="restart.remote.instance"/>
    </target>
 
     <target name="start.javadb">
-      <ant antfile="s1as.xml" target="start.javadb" dir="."/>
+      <ant antfile="s1as.xml" target="start.javadb" dir=".."/>
     </target>
 
     <target name="start.javadb.asadmin" >
-        <ant antfile="s1as.xml" target="start.javadb.asadmin" dir="."/>
+        <ant antfile="s1as.xml" target="start.javadb.asadmin" dir=".."/>
     </target>
 
     <target name="stop.javadb.asadmin" >
-        <ant antfile="s1as.xml" target="stop.javadb.asadmin" dir="."/>
+        <ant antfile="s1as.xml" target="stop.javadb.asadmin" dir=".."/>
     </target>
 
 

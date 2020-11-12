@@ -24,11 +24,11 @@
   **   should be called as part of the config.vi process.
   -->
 
-<project name="CTS Connector RI configuration" basedir="." default="usage">
+<project name="CTS Connector RI configuration" basedir=".." default="usage">
 
     <!-- IMPORTS -->
-    <import file="./common.xml"/>
-    <import file="./deploy.xml"/>
+    <import file="common.xml"/>
+    <import file="deploy.xml"/>
 
     <property name="deploy.dir" value="${impl.vi.deploy.dir}/"/>
 
@@ -69,27 +69,9 @@
 
         <antcall target="restart.server"/>
 
-        <antcall target="create-jvm-options" >
-             <param name="jvm.options" value="${vi.jvm.options}"/>
-        </antcall>
-
         <antcall target="create.security.eis.mappings" />
 
         <antcall target="setup.all.rars.and.pools" />
-    </target>
-
-
-    <!-- 
-        .rar based security tests will require a mapping to map eis user
-        names to a username that exists within the connector Server.
-        There should be one mapping for each Resource Adapter.
-        It is sepected each vendor will need its own way of handling 
-        these sort of security mappings of eis users to appserver users.
-    -->
-    <target name="create.security.eis.mappings" depends="configPlatform">
-        <antcall target="create-jvm-options" >
-             <param name="jvm.options" value="-Dwhitebox-tx-map=${rauser1}=${user}:-Dwhitebox-tx-param-map=${rauser1}=${user}:-Dwhitebox-notx-map=${rauser1}=${user}:-Dwhitebox-notx-param-map=${rauser1}=${user}:-Dwhitebox-xa-map=${rauser1}=${user}:-Dwhitebox-xa-param-map=${rauser1}=${user}"/>
-        </antcall>
     </target>
 
 
@@ -496,11 +478,6 @@
         <property name="pool_args"
                   value = "user=${user1}:password=${password1}:TSRValue=comp/TransactionSynchronizationRegistry"/>
        <exec executable="${exec.asadmin}" >
-            <arg line="${exec.asadmin.part2}" />
-            <arg line=" --user ${admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${server.host}"/>
-            <arg line=" --port ${server.port}"/>
             <arg line=" create-connector-connection-pool"/>
             <arg line=" --raname ${rarName}"/>
             <arg line=" --property ${pool_args}"/>
@@ -512,11 +489,6 @@
 
      <target name="delete-connector-connection-pool" >
         <exec executable="${exec.asadmin}" >
-            <arg line="${exec.asadmin.part2}" />
-            <arg line=" --user ${admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${server.host}"/>
-            <arg line=" --port ${server.port}"/>
             <arg line=" delete-connector-connection-pool"/>
             <arg line=" --cascade=true"/>
             <arg line=" ${poolName}"/>
@@ -538,11 +510,6 @@
         <echo>jndiName.minus.prefix = ${jndiName.minus.prefix} </echo>
 
         <exec executable="${exec.asadmin}" >
-            <arg line="${exec.asadmin.part2}" />
-            <arg line=" --user ${admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${server.host}"/>
-            <arg line=" --port ${server.port}"/>
             <arg line=" create-connector-resource"/>
             <arg line=" --poolname ${poolName}"/>
             <arg line=" ${jndiName.minus.prefix}"/>
@@ -566,11 +533,6 @@
         <echo>jndiName = ${jndiName} </echo>
         <echo>jndiName.minus.prefix = ${jndiName.minus.prefix} </echo>
         <exec executable="${exec.asadmin}" >
-            <arg line="${exec.asadmin.part2}" />
-            <arg line=" --user ${admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${server.host}"/>
-            <arg line=" --port ${server.port}"/>
             <arg line=" delete-connector-resource"/>
             <arg line=" ${jndiName.minus.prefix}"/>
         </exec>
