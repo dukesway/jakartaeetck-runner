@@ -312,17 +312,17 @@ else
   fi
 
   if [[ -z "${COMMAND_RUNNER_VERSION}" ]]; then
-      wget --progress=bar:force --no-cache $PAYARA_MICRO_COMMAND_RUNNER_URL -O ${CTS_HOME}/micro-command-runner.jar
+      wget --progress=bar:force --no-cache $PAYARA_MICRO_COMMAND_RUNNER_URL -O ${CTS_HOME}/payara-micro-command-runner.jar
   else
       mvn dependency:copy \
       -Dartifact=fish.payara.jakartaee.tck:send-asadmin-command-runner:$COMMAND_RUNNER_VERSION:jar \
       -Dmdep.stripVersion=true \
       -DoutputDirectory=${CTS_HOME}
-      mv ${CTS_HOME}/send-asadmin-command-runner.jar ${CTS_HOME}/micro-command-runner.jar
+      mv ${CTS_HOME}/send-asadmin-command-runner.jar ${CTS_HOME}/payara-micro-command-runner.jar
   fi
 
   chmod -R 777 ${CTS_HOME}/payara-micro.jar
-  chmod -R 777 ${CTS_HOME}/micro-command-runner.jar
+  chmod -R 777 ${CTS_HOME}/payara-micro-command-runner.jar
   $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi/micro --warmup --nocluster
   chmod -R 777 ${CTS_HOME}/vi
 

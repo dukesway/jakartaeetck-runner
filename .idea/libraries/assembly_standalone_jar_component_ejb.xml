@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="assembly_standalone_jar_component_ejb">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../JakartaEE-TCK/src/com/sun/ts/tests/j2eetools/deploy/apps/ejb/assembly_standalone_jar_component_ejb.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

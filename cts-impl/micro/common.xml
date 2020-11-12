@@ -68,7 +68,7 @@
            <echo message="on unix"/>
            <property name="dir.sep" value="/"/>
            <property name="exec.java.jar.micro" value="${java.home}/bin/java -jar ${ts.home}/payara-micro.jar"/>
-           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/micro-command-runner.jar"/>
+           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"/>
            <property name="exec.imqusermgr" value="${imqbin.loc}/imqusermgr" />
            <property name="exec.imqusermgr.part2" value="" />
            <property name="cert.file" value="${bin.dir}/certificates/cts_cert"/>
@@ -102,7 +102,7 @@
            <echo message="on windows"/>
            <property name="dir.sep" value="/cts-impl/server/common.xml"/>
            <property name="exec.java.jar.micro" value="${java.home}\bin\java -jar ${ts.home}\payara-micro.jar"/>
-           <property name="exec.asadmin" value="${java.home}\bin\java -jar ${ts.home}\micro-command-runner.jar"/>
+           <property name="exec.asadmin" value="${java.home}\bin\java -jar ${ts.home}\payara-micro-command-runner.jar"/>
            <property name="exec.imqusermgr" value="cmd.exe" />
            <property name="exec.imqusermgr.part2" value="/c ${imqbin.loc}\imqusermgr" />
            <property name="cert.file" value="${ts.home}\bin\certificates\cts_cert"/>
@@ -816,7 +816,7 @@
   </target>
 
    <target name="enable.server.provider" >
-           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/micro-command-runner.jar"" />
+           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"" />
             <exec executable="${exec.asadmin}" >
             <arg line=" set "/>
             <arg line=" server-config.security-service.message-security-config.SOAP.default_provider=ServerProvider"/>
@@ -824,7 +824,7 @@
      </target>
 
   <target name="enable.serverside.client.provider" >
-           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/micro-command-runner.jar"" />
+           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"" />
         <exec executable="${exec.asadmin}" >
             <arg line="set "/>
             <arg line="server-config.security-service.message-security-config.SOAP.default_client_provider=ClientProvider "/>
@@ -835,13 +835,13 @@
        Disable wss providers configuration 
     -->
    <target name="disable.wss.providers" depends="configPlatform">
-        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/micro-command-runner.jar"" />
+        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"" />
         <exec executable="${exec.asadmin}" >
             <arg line="set "/>
             <arg line=" server-config.security-service.message-security-config.SOAP.default_provider="/>
         </exec>
      <echo message="Removing wss client-provider" />
-        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/micro-command-runner.jar"" />
+        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"" />
         <exec executable="${exec.asadmin}" >
             <arg line="set "/>
             <arg line="server-config.security-service.message-security-config.SOAP.default_client_provider="/>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="whitebox">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../JakartaEE-TCK/src/com/sun/ts/tests/j2eetools/deploy/apps/rar/whitebox.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

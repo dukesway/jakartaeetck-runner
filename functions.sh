@@ -81,7 +81,7 @@ init_urls () {
         PAYARA_MICRO_URL=$BASE_URL/payara-micro-prerelease.zip
     fi
     if [ -z "$PAYARA_MICRO_COMMAND_RUNNER_URL" ]; then
-        PAYARA_MICRO_COMMAND_RUNNER_URL=$BASE_URL/send-asadmin-command-runner.jar
+        PAYARA_MICRO_COMMAND_RUNNER_URL=$BASE_URL/payara-micro-command-runner.jar
     fi
     if [ -z "$CDI_TCK_URL" ]; then
         CDI_TCK_URL=$BASE_URL/cdi-tck-2.0.6-dist.zip
