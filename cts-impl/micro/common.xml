@@ -67,7 +67,9 @@
     <target name="configUnix" depends="checkPlatform" if="isUnixPlatform" >
            <echo message="on unix"/>
            <property name="dir.sep" value="/"/>
-           <property name="exec.java.jar.micro" value="${java.home}/bin/java -jar ${ts.home}/../payara-micro.jar"/>
+           <property name="exec.java.jar.micro" value="${java.home}/bin/java"/>
+           <property name="exec.java.jar.micro.part2" value=" -jar"/>
+           <property name="exec.java.jar.micro.part3" value=" ${ts.home}/../payara-micro.jar"/>
            <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/../payara-micro-command-runner.jar"/>
            <property name="exec.imqusermgr" value="${imqbin.loc}/imqusermgr" />
            <property name="exec.imqusermgr.part2" value="" />
@@ -101,7 +103,9 @@
     <target name="configWindows" depends="checkPlatform" if="isWindowsPlatform" >
            <echo message="on windows"/>
            <property name="dir.sep" value="/cts-impl/server/common.xml"/>
-           <property name="exec.java.jar.micro" value="${java.home}\bin\java -jar ${ts.home}\..\payara-micro.jar"/>
+           <property name="exec.java.jar.micro" value="${java.home}\bin\java"/>
+           <property name="exec.java.jar.micro.part2" value=" -jar"/>
+           <property name="exec.java.jar.micro.part3" value=" ${ts.home}\..\payara-micro.jar"/>
            <property name="exec.asadmin" value="${java.home}\bin\java -jar ${ts.home}\..\payara-micro-command-runner.jar"/>
            <property name="exec.imqusermgr" value="cmd.exe" />
            <property name="exec.imqusermgr.part2" value="/c ${imqbin.loc}\imqusermgr" />
@@ -220,7 +224,9 @@
         Start The App Server on unix/linux
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
-      <exec executable="${exec.java.jar.micro}" failifexecutionfails="false">
+      <exec executable="${exec.java.jar.micro}" failifexecutionfails="true">
+        <arg line=" ${exec.java.jar.micro.part2}"/>
+        <arg line=" ${exec.java.jar.micro.part3}"/>
         <arg line=" --rootdir ${javaee.home}"/>
       </exec>
       <echo message=" The App Server is now available." />
@@ -231,6 +237,8 @@
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
       <exec executable="${exec.java.jar.micro}" failifexecutionfails="false">
+          <arg line=" ${exec.java.jar.micro.part2}"/>
+          <arg line=" ${exec.java.jar.micro.part3}"/>
           <arg line=" --rootdir ${javaee.home}"/>
       </exec>
       <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
