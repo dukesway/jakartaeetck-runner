@@ -824,7 +824,7 @@
      </target>
 
   <target name="enable.serverside.client.provider" >
-           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"" />
+           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar" />
         <exec executable="${exec.asadmin}" >
             <arg line="set "/>
             <arg line="server-config.security-service.message-security-config.SOAP.default_client_provider=ClientProvider "/>
@@ -835,13 +835,13 @@
        Disable wss providers configuration 
     -->
    <target name="disable.wss.providers" depends="configPlatform">
-        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"" />
+        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar" />
         <exec executable="${exec.asadmin}" >
             <arg line="set "/>
             <arg line=" server-config.security-service.message-security-config.SOAP.default_provider="/>
         </exec>
      <echo message="Removing wss client-provider" />
-        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar"" />
+        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/payara-micro-command-runner.jar" />
         <exec executable="${exec.asadmin}" >
             <arg line="set "/>
             <arg line="server-config.security-service.message-security-config.SOAP.default_client_provider="/>
