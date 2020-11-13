@@ -27,7 +27,7 @@
     <!-- IMPORTS -->
     <import file="../../ts.common.props.xml"/>
 
-    <property name="server.start.delay.mins" value="1"/>
+    <property name="server.start.delay.secs" value="10"/>
     <property name="server" value="server"/> 
     <property name="resources.dottedname.prefix" value="domain.resources"/>
     <property name="server.policy" value="server.policy" />
@@ -226,8 +226,8 @@
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
         </java>
-        <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
-        <sleep minutes="${server.start.delay.mins}"/>
+        <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
+        <sleep minutes="${server.start.delay.secs}"/>
         <echo message=" The App Server is now available." />
     </target>
 
@@ -246,8 +246,8 @@
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
         </java>
-        <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
-        <sleep minutes="${server.start.delay.mins}"/>
+        <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
+        <sleep seconds="${server.start.delay.secs}"/>
         <echo message=" The App Server is now available." />
     </target>
 
