@@ -228,6 +228,7 @@
         <arg line=" ${exec.java.jar.micro.part2}"/>
         <arg line=" ${exec.java.jar.micro.part3}"/>
         <arg line=" --rootdir ${javaee.home}"/>
+        <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
       </exec>
       <echo message=" The App Server is now available." />
     </target>
@@ -240,6 +241,7 @@
           <arg line=" ${exec.java.jar.micro.part2}"/>
           <arg line=" ${exec.java.jar.micro.part3}"/>
           <arg line=" --rootdir ${javaee.home}"/>
+          <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
       </exec>
       <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
     </target>
