@@ -67,10 +67,9 @@
     <target name="configUnix" depends="checkPlatform" if="isUnixPlatform" >
            <echo message="on unix"/>
            <property name="dir.sep" value="/"/>
-           <property name="exec.java.jar.micro" value="${java.home}/bin/java"/>
-           <property name="exec.java.jar.micro.part2" value=" -jar"/>
-           <property name="exec.java.jar.micro.part3" value=" ${ts.home}/../payara-micro.jar"/>
-           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/../payara-micro-command-runner.jar"/>
+           <property name="payara.micro.jar" value="${ts.home}/../payara-micro.jar"/>
+           <property name="exec.asadmin" value="${cli.path}" />
+           <property name="exec.asadmin.part2" value="" />
            <property name="exec.imqusermgr" value="${imqbin.loc}/imqusermgr" />
            <property name="exec.imqusermgr.part2" value="" />
            <property name="cert.file" value="${bin.dir}/certificates/cts_cert"/>
@@ -103,10 +102,9 @@
     <target name="configWindows" depends="checkPlatform" if="isWindowsPlatform" >
            <echo message="on windows"/>
            <property name="dir.sep" value="/cts-impl/server/common.xml"/>
-           <property name="exec.java.jar.micro" value="${java.home}\bin\java"/>
-           <property name="exec.java.jar.micro.part2" value=" -jar"/>
-           <property name="exec.java.jar.micro.part3" value=" ${ts.home}\..\payara-micro.jar"/>
-           <property name="exec.asadmin" value="${java.home}\bin\java -jar ${ts.home}\..\payara-micro-command-runner.jar"/>
+           <property name="payara.micro.jar" value="${ts.home}\..\payara-micro.jar"/>
+           <property name="exec.asadmin" value="cmd.exe" />
+           <property name="exec.asadmin.part2" value= " /c ${cli.path}" />
            <property name="exec.imqusermgr" value="cmd.exe" />
            <property name="exec.imqusermgr.part2" value="/c ${imqbin.loc}\imqusermgr" />
            <property name="cert.file" value="${ts.home}\bin\certificates\cts_cert"/>
@@ -224,26 +222,44 @@
         Start The App Server on unix/linux
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
-      <exec executable="${exec.java.jar.micro}" failifexecutionfails="true">
-        <arg line=" ${exec.java.jar.micro.part2}"/>
-        <arg line=" ${exec.java.jar.micro.part3}"/>
+      <java fork="true" jar="${payara.micro.jar}">
         <arg line=" --rootdir ${javaee.home}"/>
         <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
-      </exec>
+      </java>
       <echo message=" The App Server is now available." />
+    </target>
+
+    <!--
+       Create asadmin.sh for the harness
+    -->
+    <target name="create.asadmin.sh" depends="configPlatform,checkForFiles" if="isUnixPlatform">
+        <copyfile src="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.sh.template" dest="${server.home}/bin/asadmin.sh"/>
     </target>
 
     <!--
         Start the App Server on windoze
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
-      <exec executable="${exec.java.jar.micro}" failifexecutionfails="false">
-          <arg line=" ${exec.java.jar.micro.part2}"/>
-          <arg line=" ${exec.java.jar.micro.part3}"/>
+      <java fork="true" jar="${payara.micro.jar}">
           <arg line=" --rootdir ${javaee.home}"/>
           <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
-      </exec>
+      </java>
       <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
+    </target>
+
+    <!--
+       Create cts-asadmin.bat for the harness:
+       Appends an echo statement to the asadmin.bat file on windows only.
+       This is done so the CTS porting can read the return status of
+       the exec'ed asadmin command.  On Unix the return value is propogated
+       back to the exec'ed process.
+    -->
+    <target name="create.asadmin.bat" depends="configPlatform,checkForFiles" if="isWindowsPlatform">
+        <copyfile src="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.bat.template" dest="${server.home}/bin/asadmin.bat"/>
+        <concat destfile="${server.home}/bin/cts-asadmin.bat">
+            <filelist dir="${server.home}/bin" files="asadmin.bat" />
+            <filelist dir="${bin.dir}/xml/impl/${impl.vi}/templates" files="asadmin.bat.concat.template" />
+        </concat>
     </target>
 
     <!--
@@ -251,7 +267,8 @@
     -->
     <target name="stop-domain" depends="configPlatform">
       <exec executable="${exec.asadmin}" failifexecutionfails="false">
-        <arg line=" stop-domain"/>
+          <arg line="${exec.asadmin.part2}" />
+          <arg line=" stop-domain"/>
       </exec>
     </target>
 
@@ -260,6 +277,7 @@
      -->
      <target name="list.jdbc.pools" depends="configPlatform">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" list-jdbc-connection-pools"/>
         </exec>
      </target>
@@ -270,6 +288,7 @@
      -->
      <target name="create-jdbc-connection-pool">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" create-jdbc-connection-pool"/>
             <arg line=" --restype ${restype}"/>
             <arg line=" --datasourceclassname ${datasourceclassname}"/>
@@ -286,6 +305,7 @@
      -->
      <target name="delete-jdbc-connection-pool">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" delete-jdbc-connection-pool"/>
             <arg line=" ${poolName}"/>
         </exec>
@@ -318,6 +338,7 @@
      -->
      <target name="ping-connection-pool">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" ping-connection-pool"/>
             <arg line=" ${poolName}"/>
         </exec>
@@ -327,6 +348,7 @@
      -->
      <target name="create-jdbc-resource">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" create-jdbc-resource"/>
             <arg line=" --connectionpoolid ${connectionpoolid}"/>
             <arg line=" ${jndiName}"/>
@@ -338,6 +360,7 @@
      -->
      <target name="delete-jdbc-resource">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" delete-jdbc-resource"/>
             <arg line=" ${jndiName}"/>
         </exec>
@@ -348,6 +371,7 @@
      -->
      <target name="set" >
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" set"/>
             <arg line=" ${set.value}"/>
         </exec>
@@ -366,6 +390,7 @@
           </filterset>
         </copy>
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" create-file-user"/>
             <arg line=" --groups ${usergroups}"/>
             <arg line=" ${userName}"/>
@@ -374,6 +399,7 @@
 
      <target name="delete-file-user" >
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" delete-file-user"/>
             <arg line=" ${userName}"/>
         </exec>
@@ -384,6 +410,7 @@
      -->
      <target name="delete-javamail-resource">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" delete-javamail-resource"/>
             <arg line=" ${jndiName}"/>
         </exec>
@@ -394,6 +421,7 @@
      -->
      <target name="create-javamail-resource" >
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" create-javamail-resource"/>
             <arg line=" --mailhost ${mailHost}"/>
             <arg line=" --mailuser ${mailuser1}"/>
@@ -443,6 +471,7 @@
      -->
      <target name="delete-connector-connection-pool" >
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" delete-connector-connection-pool"/>
             <arg line=" --cascade=true"/>
             <arg line=" ${poolName}"/>
@@ -454,6 +483,7 @@
      -->
      <target name="create-connector-connection-pool" >
        <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" create-connector-connection-pool"/>
             <arg line=" --raname ${rarName}"/>
             <arg line=" --connectiondefinition com.sun.connector.jaxr.JaxrConnectionFactory"/>
@@ -466,6 +496,7 @@
      -->
      <target name="create-connector-resource" >
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" create-connector-resource"/>
             <arg line=" --poolname ${poolName}"/>
             <arg line=" ${jndiName}"/>
@@ -478,6 +509,7 @@
      -->
      <target name="delete-connector-resource" >
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" delete-connector-resource"/>
             <arg line=" ${jndiName}"/>
         </exec>
@@ -489,6 +521,7 @@
      -->
      <target name="add.ssl.client.config" depends="configPlatform" unless="use.create.system.properties">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" create-ssl"/>
             <arg line=" --type iiop-service"/>
             <arg line=" --certname s1as"/>
@@ -496,6 +529,7 @@
      </target>
      <target name="drop.ssl.client.config" depends="configPlatform" unless="use.create.system.properties">
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" delete-ssl"/>
             <arg line=" --type iiop-service"/>
         </exec>
@@ -762,6 +796,7 @@
      -->
      <target name="get.platform.edition" depends="configPlatform">
         <exec executable="${exec.asadmin}"  outputproperty="viVersion">
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" version"/>
         </exec>
      
@@ -780,6 +815,7 @@
      -->
      <target name="create-system-properties" >
         <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line="create-system-properties"/>
             <arg line=" ${property}"/>
         </exec>
@@ -826,16 +862,20 @@
   </target>
 
    <target name="enable.server.provider" >
-           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/../payara-micro-command-runner.jar" />
-            <exec executable="${exec.asadmin}" >
+       <property name="exec.asadmin" value="${cli.path}" />
+       <property name="exec.asadmin.part2" value="" />
+       <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" set "/>
             <arg line=" server-config.security-service.message-security-config.SOAP.default_provider=ServerProvider"/>
         </exec>
      </target>
 
   <target name="enable.serverside.client.provider" >
-           <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/../payara-micro-command-runner.jar" />
-        <exec executable="${exec.asadmin}" >
+      <property name="exec.asadmin" value="${cli.path}" />
+      <property name="exec.asadmin.part2" value="" />
+      <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line="set "/>
             <arg line="server-config.security-service.message-security-config.SOAP.default_client_provider=ClientProvider "/>
         </exec>
@@ -845,8 +885,10 @@
        Disable wss providers configuration 
     -->
    <target name="disable.wss.providers" depends="configPlatform">
-        <property name="exec.asadmin" value="${java.home}/bin/java -jar ${ts.home}/../payara-micro-command-runner.jar" />
-        <exec executable="${exec.asadmin}" >
+       <property name="exec.asadmin" value="${cli.path}" />
+       <property name="exec.asadmin.part2" value="" />
+       <exec executable="${exec.asadmin}" >
+            <arg line="${exec.asadmin.part2}" />
             <arg line="set "/>
             <arg line=" server-config.security-service.message-security-config.SOAP.default_provider="/>
         </exec>
@@ -881,6 +923,7 @@
      -->
      <target name="get.platform.version" depends="configPlatform" unless="gotVersion">
         <exec executable="${exec.asadmin}"  outputproperty="platformVersion">
+            <arg line="${exec.asadmin.part2}" />
             <arg line=" version"/>
         </exec>
 

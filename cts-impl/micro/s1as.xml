@@ -289,7 +289,7 @@
            depends= "start.appserver, change.applicationRoot, copy.provider.jar, config.jpa, 
                     add.cts.users, add.javamail.resources, add.jdbc.pools, add.jaxr, 
                     add.jdbc.resources,  drop.jvm.options, add.jvm.options, add.classpathsuffix,  
-                    set.http.ports, set.orbport, concat.security, add.cert,
+                    set.http.ports, set.orbport, create.asadmin.sh, create.asadmin.bat, concat.security, add.cert,
                     add.custom.resource, enable.trace" />
 
     <!--

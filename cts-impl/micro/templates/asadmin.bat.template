@@ -1,0 +1,9 @@
+@echo off
+
+VERIFY OTHER 2>nul
+setlocal ENABLEEXTENSIONS
+if ERRORLEVEL 0 goto ok
+echo "Unable to enable extensions"
+exit /B 1
+:ok
+java -jar "%~dp0\payara-micro-command-runner.jar" %*

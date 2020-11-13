@@ -1,0 +1,5 @@
+#!/bin/sh
+
+AS_INSTALL_BIN=`dirname "$0"`
+
+exec java -XX:+IgnoreUnrecognizedVMOptions -jar "$AS_INSTALL_BIN/payara-micro-command-runner.jar" "$@"

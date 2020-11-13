@@ -311,23 +311,36 @@ else
       -DoutputDirectory=${CTS_HOME}
   fi
 
+  chmod -R 777 ${CTS_HOME}/payara-micro.jar
+  $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi --warmup --nocluster
+  chmod -R 777 ${CTS_HOME}/vi
+  mkdir ${CTS_HOME}/vi/logs
+  mkdir ${CTS_HOME}/vi/bin
+
   if [[ -z "${COMMAND_RUNNER_VERSION}" ]]; then
-      wget --progress=bar:force --no-cache $PAYARA_MICRO_COMMAND_RUNNER_URL -O ${CTS_HOME}/payara-micro-command-runner.jar
+      wget --progress=bar:force --no-cache $PAYARA_MICRO_COMMAND_RUNNER_URL -O ${CTS_HOME}/vi/bin/payara-micro-command-runner.jar
   else
       mvn dependency:copy \
       -Dartifact=fish.payara.jakartaee.tck:send-asadmin-command-runner:$COMMAND_RUNNER_VERSION:jar \
       -Dmdep.stripVersion=true \
-      -DoutputDirectory=${CTS_HOME}
+      -DoutputDirectory=${CTS_HOME}/vi/bin
       mv ${CTS_HOME}/send-asadmin-command-runner.jar ${CTS_HOME}/payara-micro-command-runner.jar
   fi
 
-  chmod -R 777 ${CTS_HOME}/payara-micro.jar
-  chmod -R 777 ${CTS_HOME}/payara-micro-command-runner.jar
-  $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi --warmup --nocluster
   chmod -R 777 ${CTS_HOME}/vi
 
   if [ ! -d "${CTS_HOME}/vi/runtime" ]; then
     echo "Expected VI directory ${CTS_HOME}/vi/runtime does not exist or is not a directory"
+    exit 1
+  fi
+
+  if [ ! -d "${CTS_HOME}/vi/logs" ]; then
+    echo "Expected VI directory ${CTS_HOME}/vi/logs does not exist or is not a directory"
+    exit 1
+  fi
+
+  if [ ! -f "${CTS_HOME}/vi/bin/payara-micro-command-runner.jar" ]; then
+    echo "Expected VI command runner ${CTS_HOME}/vi/bin/payara-micro-command-runner.jar does not exist"
     exit 1
   fi
 
