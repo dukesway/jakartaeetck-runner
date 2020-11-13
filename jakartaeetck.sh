@@ -312,7 +312,7 @@ else
   fi
 
   chmod -R 777 ${CTS_HOME}/payara-micro.jar
-  $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi --warmup --nocluster
+  $JAVA_HOME_VI/bin/java -jar ${CTS_HOME}/payara-micro.jar --rootdir ${CTS_HOME}/vi --warmup
   chmod -R 777 ${CTS_HOME}/vi
   mkdir ${CTS_HOME}/vi/logs
   mkdir ${CTS_HOME}/vi/bin

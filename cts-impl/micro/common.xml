@@ -222,11 +222,13 @@
         Start The App Server on unix/linux
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
-      <java fork="true" jar="${payara.micro.jar}">
-        <arg line=" --rootdir ${javaee.home}"/>
-        <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
-      </java>
-      <echo message=" The App Server is now available." />
+        <java fork="true" jar="${payara.micro.jar}" spawn="true">
+            <arg line=" --rootdir ${javaee.home}"/>
+            <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
+        </java>
+        <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
+        <sleep minutes="${server.start.delay.mins}"/>
+        <echo message=" The App Server is now available." />
     </target>
 
     <!--
@@ -240,11 +242,13 @@
         Start the App Server on windoze
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
-      <java fork="true" jar="${payara.micro.jar}">
-          <arg line=" --rootdir ${javaee.home}"/>
-          <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
-      </java>
-      <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
+        <java fork="true" jar="${payara.micro.jar}" spawn="true">
+            <arg line=" --rootdir ${javaee.home}"/>
+            <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
+        </java>
+        <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.mins} minutes) " />
+        <sleep minutes="${server.start.delay.mins}"/>
+        <echo message=" The App Server is now available." />
     </target>
 
     <!--
