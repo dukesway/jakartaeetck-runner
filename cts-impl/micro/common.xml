@@ -214,17 +214,20 @@
         depending on whether we are on unix/linux or windows.
     -->
     <target name="start.appserver" depends="configPlatform" >
-
-       <antcall target="start.appserver.unix"/>
+       <antcall target="start.appserver.unix">
        <antcall target="start.appserver.win"/>
     </target>
     <!--
         Start The App Server on unix/linux
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
+        <property name="micro.jvm.options" value=""/>
+        <property name="micro.runtime.options" value=""/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
+            <jvmarg line=" ${micro.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
+            <arg line=" ${micro.runtime.options}"/>
         </java>
         <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
         <sleep minutes="${server.start.delay.secs}"/>
@@ -242,9 +245,11 @@
         Start the App Server on windoze
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
+        <property name="additional.micro.options" value=""/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
+            <arg line=" ${additional.micro.options}"/>
         </java>
         <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
         <sleep seconds="${server.start.delay.secs}"/>
@@ -918,6 +923,21 @@
       <!-- Restart server -->
         <antcall target="restart.server" />
    </target>
+
+    <!--
+        Config the required jvm options for the JPA tests. Since Micro gets its JVM options from the command line, we
+        need to restart it with the additional options.
+    -->
+    <target name="create.jpa.vm.options" depends="configPlatform">
+        <antcall target="stop-domain"/>
+        <antcall target="start.appserver">
+            <param name="micro.jvm.options" value=" -Dlog.file.location=${log.file.location}"/>
+        </antcall>
+    </target>
+
+    <target name="delete.jpa.vm.options" depends="configPlatform">
+        <antcall target="restart.server"/>
+    </target>
 
 
      <!--

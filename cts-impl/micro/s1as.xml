@@ -1442,6 +1442,7 @@
 
      <target name="config.jpa" >
          <antcall target="create.jpa.vm.options"/>
+         <!-- Need to restart the micro instance with the JVM options -->
      </target>
 
 
