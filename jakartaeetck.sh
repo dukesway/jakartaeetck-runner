@@ -208,12 +208,6 @@ if [ ! -z $ri_needed ]; then
 fi
 
 
-printf  "
-******************************************************
-* Installing VI (Payara)                          *
-******************************************************
-
-"
 
 if [ -z "${JAVA_HOME_VI}" ]; then
   export JAVA_HOME_VI=$JAVA_HOME
@@ -230,7 +224,12 @@ mkdir -p ${CTS_HOME}/vi
 wget --progress=bar:force --no-cache $DERBY_URL -O ${CTS_HOME}/javadb.zip
 
 if [ ! "${RUN_MICRO}" == "true" ]; then
-  echo "RUN_MICRO not set, installing and running against Payara Server"
+  printf  "
+******************************************************
+* Installing VI (Payara Server)                          *
+******************************************************
+
+"
 
   if [ -z "${GF_VI_BUNDLE_URL}" ]; then
     echo "Using GF_BUNDLE_URL for GF VI bundle: $GF_BUNDLE_URL"
@@ -300,7 +299,12 @@ if [ ! "${RUN_MICRO}" == "true" ]; then
   ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} create-jvm-options -Djava.security.manager
   ${CTS_HOME}/vi/$GF_VI_TOPLEVEL_DIR/glassfish/bin/asadmin --user admin --passwordfile ${ADMIN_PASSWORD_FILE} stop-domain
 else
-  echo "RUN_MICRO set, installing and running against Payara Micro"
+  printf  "
+******************************************************
+* Installing VI (Payara Micro)                          *
+******************************************************
+
+"
 
   if [[ -z "${PAYARA_VERSION}" ]]; then
       wget --progress=bar:force --no-cache $GF_VI_BUNDLE_URL -O ${CTS_HOME}/payara-micro.jar
