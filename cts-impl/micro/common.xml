@@ -214,7 +214,7 @@
         depending on whether we are on unix/linux or windows.
     -->
     <target name="start.appserver" depends="configPlatform" >
-       <antcall target="start.appserver.unix">
+       <antcall target="start.appserver.unix"/>
        <antcall target="start.appserver.win"/>
     </target>
     <!--
