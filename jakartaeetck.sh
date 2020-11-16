@@ -106,6 +106,18 @@ printf  "
 
 killjava "com.sun.enterprise.admin.cli.AdminMain"
 
+printf  "
+******************************************************
+* Shutting down running Payara Micro instances       *
+******************************************************
+
+"
+
+
+killjava "payara-micro.jar"
+
+
+
 ##### installCTS.sh starts here #####
 cat ${TS_HOME}/bin/ts.jte | sed "s/-Doracle.jdbc.mapDateToTimestamp/-Doracle.jdbc.mapDateToTimestamp -Djava.security.manager/"  > ts.save
 cp ts.save $TS_HOME/bin/ts.jte
