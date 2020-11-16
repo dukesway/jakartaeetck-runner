@@ -230,7 +230,7 @@
             <arg line=" ${micro.runtime.options}"/>
         </java>
         <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
-        <sleep minutes="${server.start.delay.secs}"/>
+        <sleep seconds="${server.start.delay.secs}"/>
         <echo message=" The App Server is now available." />
     </target>
 
