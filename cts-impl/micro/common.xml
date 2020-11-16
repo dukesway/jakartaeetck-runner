@@ -227,6 +227,7 @@
             <jvmarg line=" ${micro.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
+            <arg line=" --sslport 8181"/>
             <arg line=" ${micro.runtime.options}"/>
         </java>
         <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
@@ -253,6 +254,7 @@
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
+            <arg line=" --sslport 8181"/>
             <arg line=" ${additional.micro.options}"/>
         </java>
         <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
