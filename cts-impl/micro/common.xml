@@ -239,6 +239,9 @@
     -->
     <target name="create.asadmin.sh" depends="configPlatform,checkForFiles" if="isUnixPlatform">
         <copy file="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.sh.template" tofile="${server.home}/bin/asadmin"/>
+        <setpermissions permissions="OWNER_READ,OWNER_WRITE,OWNER_EXECUTE,OTHERS_READ,OTHERS_WRITE,OTHERS_EXECUTE,GROUP_READ,GROUP_WRITE,GROUP_EXECUTE">
+            <file file="${server.home}/bin/asadmin"/>
+        </setpermissions>
     </target>
 
     <!--
@@ -266,6 +269,9 @@
     -->
     <target name="create.asadmin.bat" depends="configPlatform,checkForFiles" if="isWindowsPlatform">
         <copy file="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.bat.template" tofile="${server.home}/bin/asadmin.bat"/>
+        <setpermissions permissions="OWNER_READ,OWNER_WRITE,OWNER_EXECUTE,OTHERS_READ,OTHERS_WRITE,OTHERS_EXECUTE,GROUP_READ,GROUP_WRITE,GROUP_EXECUTE">
+            <file file="${server.home}/bin/asadmin.bat"/>
+        </setpermissions>
         <concat destfile="${server.home}/bin/cts-asadmin.bat">
             <filelist dir="${server.home}/bin" files="asadmin.bat" />
             <filelist dir="${bin.dir}/xml/impl/${impl.vi}/templates" files="asadmin.bat.concat.template" />
