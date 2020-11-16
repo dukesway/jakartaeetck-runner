@@ -238,7 +238,7 @@
        Create asadmin.sh for the harness
     -->
     <target name="create.asadmin.sh" depends="configPlatform,checkForFiles" if="isUnixPlatform">
-        <copyfile src="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.sh.template" dest="${server.home}/bin/asadmin.sh"/>
+        <copy file="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.sh.template" tofile="${server.home}/bin/asadmin"/>
     </target>
 
     <!--
@@ -265,7 +265,7 @@
        back to the exec'ed process.
     -->
     <target name="create.asadmin.bat" depends="configPlatform,checkForFiles" if="isWindowsPlatform">
-        <copyfile src="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.bat.template" dest="${server.home}/bin/asadmin.bat"/>
+        <copy file="${bin.dir}/xml/impl/${impl.vi}/templates/asadmin.bat.template" tofile="${server.home}/bin/asadmin.bat"/>
         <concat destfile="${server.home}/bin/cts-asadmin.bat">
             <filelist dir="${server.home}/bin" files="asadmin.bat" />
             <filelist dir="${bin.dir}/xml/impl/${impl.vi}/templates" files="asadmin.bat.concat.template" />
