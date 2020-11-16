@@ -245,6 +245,7 @@
         Start the App Server on windoze
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
+        <property name="micro.jvm.options" value=""/>
         <property name="additional.micro.options" value=""/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <arg line=" --rootdir ${javaee.home}"/>
