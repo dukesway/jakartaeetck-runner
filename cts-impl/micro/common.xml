@@ -43,7 +43,7 @@
     <property name="NSSConfigDir" value="${javaee.home}/config" />
     <property name="appclient.log.level" value="INFO"/>
     <property name="appclient.log.dir" value="${ts.home}/tmp/appclient"/>
-    <property name="default.ext.dirs" value="$$\{com.sun.aas.javaRoot\}/lib/ext$\{path.separator\}$$\{com.sun.aas.javaRoot\}/jre/lib/ext$$\{path.separator\}$$\{s1as.domain\}/lib/ext$$\{path.separator\}$$\{s1as.domain\}/lib/jdbcdrivers$$\{path.separator\}$$\{s1as.domain\}/../javadb/lib"/>
+    <property name="default.ext.dirs" value="$$\{com.sun.aas.javaRoot\}/lib/ext$$\{path.separator\}$$\{com.sun.aas.javaRoot\}/jre/lib/ext$$\{path.separator\}$$\{s1as.domain\}/lib/ext$$\{path.separator\}$$\{s1as.domain\}/lib/jdbcdrivers$$\{path.separator\}$$\{s1as.domain\}/../javadb/lib"/>
 
     <!--
       Check to see if we are using the pointbase pool, if so
