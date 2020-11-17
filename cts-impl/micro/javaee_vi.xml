@@ -149,7 +149,9 @@
    <!--
         Remove  PE or the DAS(SE/EE) configuration for CTS
    -->
-   <target name="clean.das" if="testingAgainstDAS" depends="use.jms,no.jms">
+   <target name="clean.das" if="testingAgainstDAS">
+       <property name="configTarget" value="config.s1as"/>
+       <property name="cleanTarget" value="clean.s1as"/>
        <echo message="****Removing CTS configuration for DAS/PE *****" />
        <ant antfile="s1as.xml" target="${cleanTarget}"/>
    </target>
