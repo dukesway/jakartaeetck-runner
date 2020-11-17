@@ -928,27 +928,6 @@
         <antcall target="restart.server" />
    </target>
 
-    <!--
-        Config the required jvm options for the JPA tests. Since Micro gets its JVM options from the command line, we
-        need to restart it with the additional options.
-    -->
-    <target name="create.jpa.vm.options" depends="configPlatform">
-        <antcall target="stop-domain"/>
-        <property name="micro.jvm.options" value="${micro.jvm.options}-Dlog.file.location=${log.file.location}"/>
-        <antcall target="start.appserver"/>
-    </target>
-
-    <target name="delete.jpa.vm.options" depends="configPlatform">
-        <!-- First remove xxx;-Dprop.to.remove
-        <propertyregex property="micro.jvm.options"
-                       input="${micro.jvm.options}"
-                       regexp="-Dlog.file.location=(.*)$$\{path.separator\}"
-                       replace=""
-                       defaultvalue="true"/>
-        <antcall target="restart.server"/>
-    </target>
-
-
      <!--
          Get the platform version and store the return value in
          the property "platformVersion".  Currently this method is only
