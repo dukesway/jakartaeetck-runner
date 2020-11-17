@@ -234,7 +234,7 @@
     <target name="clean.s1as" 
            depends= "drop.javamail.resources, drop.jdbc.resources, drop.jdbc.pools,
                     drop.classpathsuffix, drop.certs,
-                    drop.ssl.client.config, unconfig.jpa, delete.provider.jar, drop.custom.resource" />
+                    drop.ssl.client.config, delete.provider.jar, drop.custom.resource" />
 
     <!--
        cleanall.s1as removes all of the configuration settings required by
@@ -249,7 +249,7 @@
     -->
     <target name="config.s1as" 
            depends= "start.appserver, create.asadmin.sh, create.asadmin.bat, change.applicationRoot,
-                    copy.provider.jar, config.jpa, add.javamail.resources, add.jdbc.pools,
+                    copy.provider.jar, add.javamail.resources, add.jdbc.pools,
                     add.jdbc.resources, add.classpathsuffix,
                     set.http.ports, set.orbport, concat.security, add.cert, add.custom.resource, enable.trace" />
 
@@ -1015,16 +1015,6 @@
          <undeployall j2eehome="${javaee.home}"
                       remoteinstance="true"
                       tshome="${ts.home}"/>
-     </target>
-
-     <target name="config.jpa" >
-         <antcall target="create.jpa.vm.options"/>
-         <!-- Need to restart the micro instance with the JVM options -->
-     </target>
-
-
-     <target name="unconfig.jpa" >
-         <antcall target="delete.jpa.vm.options"/>
      </target>
 
 
