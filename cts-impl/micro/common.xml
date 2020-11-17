@@ -70,7 +70,6 @@
            <property name="payara.micro.jar" value="${ts.home}/../payara-micro.jar"/>
            <property name="exec.asadmin" value="${cli.path}" />
            <property name="exec.asadmin.part2" value="" />
-           <property name="micro.jvm.options" value="${vi.jvm.options}" />
            <property name="exec.imqusermgr" value="${imqbin.loc}/imqusermgr" />
            <property name="exec.imqusermgr.part2" value="" />
            <property name="cert.file" value="${bin.dir}/certificates/cts_cert"/>
@@ -215,16 +214,16 @@
         depending on whether we are on unix/linux or windows.
     -->
     <target name="start.appserver" depends="configPlatform" >
-       <antcall target="start.appserver.unix"/>
-       <antcall target="start.appserver.win"/>
+        <echo message="Starting Payara Micro with the following JVM options: ${vi.jvm.options}"
+        <antcall target="start.appserver.unix"/>
+        <antcall target="start.appserver.win"/>
     </target>
     <!--
         Start The App Server on unix/linux
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
-        <property name="micro.jvm.options" value=""/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
-            <jvmarg line=" ${micro.jvm.options}"/>
+            <jvmarg line=" ${vi.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
         </java>
@@ -247,8 +246,8 @@
         Start the App Server on windoze
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
-        <property name="micro.jvm.options" value=""/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
+            <jvmarg line=" ${vi.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
         </java>
