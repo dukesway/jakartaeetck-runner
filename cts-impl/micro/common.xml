@@ -215,7 +215,6 @@
         depending on whether we are on unix/linux or windows.
     -->
     <target name="start.appserver" depends="configPlatform" >
-        <echo message="Starting Payara Micro with the following JVM options: ${vi.jvm.options}"/>
         <antcall target="start.appserver.unix"/>
         <antcall target="start.appserver.win"/>
     </target>
@@ -223,6 +222,7 @@
         Start The App Server on unix/linux
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
+        <echo message="Starting Payara Micro with the following JVM options: ${vi.jvm.options}"/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <jvmarg line=" ${vi.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
@@ -247,6 +247,7 @@
         Start the App Server on windoze
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
+        <echo message="Starting Payara Micro with the following JVM options: ${vi.jvm.options}"/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <jvmarg line=" ${vi.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
