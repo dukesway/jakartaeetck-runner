@@ -87,10 +87,6 @@
                      value="${common.bin.dir}/xml/impl/${impl.vi}/templates/password.template"/>
            <property name="password.file" value="${ts.home}/../admin-password.txt"/>
            <property name="nodeagent.path" value="" />
-           <echo message="default.ext.dirs = ${default.ext.dirs}"/>
-           <property name="default.ext.dirs"
-                     value="${java.home}/lib/ext;${java.home}/jre/lib/ext;${s1as.domain}/lib/ext;${s1as.domain}/lib/jdbcdrivers;${s1as.domain}/../javadb/lib"/>
-           <echo message="default.ext.dirs = ${default.ext.dirs}"/>
     </target>
 
     <!--
@@ -126,8 +122,6 @@
                      value="${ts.home}\bin\xml\impl\glassfish\templates\password.template"/>
            <property name="password.file" value="${ts.home}\..\admin-password.tx"/>
            <property name="nodeagent.path" value="--agentdir ${drive}\${sjsas.node.agent.dir.name}" />
-           <property name="default.ext.dirs"
-                     value="${java.home}\lib\ext:${java.home}\jre\lib\ext:${s1as.domain}\lib\ext:${s1as.domain}\lib\jdbcdrivers:${s1as.domain}\..\javadb\lib"/>
     </target>
 
     <!--
