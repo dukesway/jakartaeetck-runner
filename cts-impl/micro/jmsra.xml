@@ -76,10 +76,6 @@
         </copy>
         <exec executable="${exec.asadmin}">
             <arg line="${exec.asadmin.part2}"/>
-            <arg line=" --user ${s1as.admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${s1as.admin.host}"/>
-            <arg line=" --port ${s1as.admin.port}"/>
             <arg line=" --echo=true"/>
             <arg line=" multimode"/>
             <arg line=" --file ${createJMSRAtemplate.txt}"/>
@@ -93,10 +89,6 @@
     <target name="doJMSRAUnconfig" depends="configPlatform">
         <exec executable="${exec.asadmin}">
             <arg line="${exec.asadmin.part2}"/>
-            <arg line=" --user ${s1as.admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${s1as.admin.host}"/>
-            <arg line=" --port ${s1as.admin.port}"/>
             <arg line=" --echo=true"/>
             <arg line=" multimode"/>
             <arg line=" --file ${bin.dir}/xml/impl/${impl.vi}/templates/delete.jmsra.template"/>
@@ -173,10 +165,6 @@
      <target name="create-resource-adapter-config">
        <exec executable="${exec.asadmin}">
             <arg line="${exec.asadmin.part2}"/>
-            <arg line=" --user ${s1as.admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${s1as.admin.host}"/>
-            <arg line=" --port ${s1as.admin.port}"/>
             <arg line=" create-resource-adapter-config"/>
             <arg line=" --property ${propName}"/>
             <arg line=" ${raName}"/>
@@ -189,10 +177,6 @@
      <target name="delete-resource-adapter-config">
        <exec executable="${exec.asadmin}">
             <arg line="${exec.asadmin.part2}"/>
-            <arg line=" --user ${s1as.admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${s1as.admin.host}"/>
-            <arg line=" --port ${s1as.admin.port}"/>
             <arg line=" delete-resource-adapter-config"/>
             <arg line=" ${raName}"/>
         </exec>
@@ -204,10 +188,6 @@
      <target name="deploy-archive">
        <exec executable="${exec.asadmin}">
             <arg line="${exec.asadmin.part2}"/>
-            <arg line=" --user ${s1as.admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${s1as.admin.host}"/>
-            <arg line=" --port ${s1as.admin.port}"/>
             <arg line=" deploy"/>
             <arg line=" ${archiveName}"/>
         </exec>
@@ -219,10 +199,6 @@
      <target name="undeploy-archive">
        <exec executable="${exec.asadmin}">
             <arg line="${exec.asadmin.part2}"/>
-            <arg line=" --user ${s1as.admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${s1as.admin.host}"/>
-            <arg line=" --port ${s1as.admin.port}"/>
             <arg line=" undeploy"/>
             <arg line=" --cascade=true"/>
             <arg line=" ${name}"/>

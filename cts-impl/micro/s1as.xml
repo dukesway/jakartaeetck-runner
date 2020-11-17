@@ -210,40 +210,6 @@
     <target name="configPlatform"
            depends="checkPlatform, configUnix, configWindows, convertPaths">
 
-      <!-- Check if we need to set jvm options -->
-
-      <condition property="jvm.args.set">
-        <not>
-          <equals arg1="" arg2="${s1as.jvm.options}" casesensitive="true" trim="true"/>
-        </not>
-      </condition>
-
-      <!-- Check if we need to set ext.dirs -->
-      <condition property="s1as.db.ext.dirs.set">
-        <not>
-          <equals arg1="" arg2="${s1as.db.ext.dirs}" casesensitive="true" trim="true"/>
-        </not>
-      </condition>
-
-      <!-- Check to see if we are using DB2 -->
-      <condition property="using.db2.type2">
-          <contains string="${use.jdbc.poolName}" substring="db2" casesensitive="false"/>
-      </condition>
-
-      <condition property="db2.props.set">
-        <and>
-          <isset property="using.db2.type2"/>
-          <isset property="s1as.db.ext.dirs.set"/>
-        </and>
-      </condition>
-
-      <!-- Check to see if we are using Oracle, will be needed in the future -->
-	  <!--
-      <condition property="using.oracle.type2">
-          <contains arg1="${jdbc.poolName}" arg2="XXX" casesensitive="false" trim="true"/>
-      </condition>
-	  -->
-
       <!-- The datasource and properties to be used for the non-tx
             database pool.  See the jdbc.db property in the ts.jte for
             more details.
@@ -309,38 +275,6 @@
     </target>
 
     <!--
-      add.jvm.options installs the jvm options defined in the build.properties
-      file.   
-    -->
-    <target name="add.jvm.options" depends="configPlatform" if="jvm.args.set">
-         <antcall target="create-jvm-options" >
-          <param name="jvm.options" value="${vi.jvm.options}"/>
-         </antcall>
-
-         <!-- add call to set jvm option for use by interop-csiv2 loggerServlet -->
-         <antcall target="create-one-jvm-option" >
-            <param name="jvm.options" value=" -Dri.log.file.location=${ri.log.file.location}"/>
-         </antcall>
-
-    </target>
-
-    <!--
-      drop.jvm.options removes the jvm options that have been previously set.
-    -->
-    <target name="drop.jvm.options" depends="configPlatform" if="jvm.args.set">
-
-         <antcall target="delete-jvm-options" >
-          <param name="jvm.options" value=" ${vi.jvm.options.remove}"/>
-         </antcall>
-
-         <antcall target="delete-one-jvm-option" >
-            <param name="jvm.options" value=" -Dri.log.file.location=${ri.log.file.location}"/>
-         </antcall>
-
-         <antcall target="delete.tx.interop"/>
-    </target>
-
-    <!--
       add.classpathsuffix adds the classpath settings as defined in 
       build.properties.
 
@@ -352,91 +286,6 @@
           <param name="set.value" value=" ${server.instance}-config.java-config.classpath_suffix=${s1as.classpathsuffix}"/>
          </antcall>
     </target>
-
-    <!--
-      add.cts.users configures the users required by cts.
-    -->
-    <target name="add.cts.users" depends="configPlatform, determine.jmsServer">
-         <antcall target="create-file-user" >
-          <param name="userpassword" value="j2ee"/>
-          <param name="usergroups" value="staff:mgr:asadmin"/>
-          <param name="userName" value="j2ee"/>
-         </antcall>
-         <antcall target="create-file-user" >
-          <param name="userpassword" value="javajoe"/>
-          <param name="usergroups" value="guest"/>
-          <param name="userName" value="javajoe"/>
-         </antcall>
-         <antcall target="create-file-user" >
-          <param name="userpassword" value="j2ee_vi"/>
-          <param name="usergroups" value="staff"/>
-          <param name="userName" value="j2ee_vi"/>
-         </antcall>
-    	<!--
-    	  There is no MQ in the web bundle so skip adding the JMS users unless
-    	  we are running against a full EE impl.
-    	-->
-    	<if>
-    	  <contains string="${javaee.level}" substring="full"/>
-    	<then>
-         <antcall target="create-jms-user" >
-          <param name="jmsServer" value="${jmsServer}"/>
-          <param name="userName" value="j2ee"/>
-          <param name="userPassword" value="j2ee"/>
-          <param name="userGroup" value="admin"/>
-         </antcall>
-         <antcall target="create-jms-user" >
-          <param name="jmsServer" value="${jmsServer}"/>
-          <param name="userName" value="javajoe"/>
-          <param name="userPassword" value="javajoe"/>
-          <param name="userGroup" value="admin"/>
-         </antcall>
-       </then>
-       <else>
-         <echo>******************************************</echo>
-         <echo>WEB PROFILE in use, JMS Users NOT Created.</echo>
-         <echo>******************************************</echo>
-       </else>
-       </if>
-    </target>
-
-    <!--
-      drop.cts.users removes the users required by cts.
-    -->
-    <target name="drop.cts.users" depends="configPlatform,determine.jmsServer">
-         <antcall target="delete-file-user" >
-          <param name="userName" value="j2ee"/>
-         </antcall>
-         <antcall target="delete-file-user" >
-          <param name="userName" value="javajoe"/>
-         </antcall>
-         <antcall target="delete-file-user" >
-          <param name="userName" value="j2ee_vi"/>
-         </antcall>
-         
-       <if>  
-         <contains string="${javaee.level}" substring="full"/>
-       <then>
-         <antcall target="delete-jms-user" >
-          <param name="jmsServer" value="${jmsServer}"/>
-          <param name="userName" value="j2ee"/>
-          <param name="userPassword" value="j2ee"/>
-          <param name="userGroup" value="admin"/>
-         </antcall>
-         <antcall target="delete-jms-user" >
-          <param name="jmsServer" value="${jmsServer}"/>
-          <param name="userName" value="javajoe"/>
-          <param name="userPassword" value="javajoe"/>
-          <param name="userGroup" value="admin"/>
-         </antcall>
-       </then>
-       <else>         
-         <echo>******************************************</echo>
-         <echo>WEB PROFILE in use, JMS Users NOT Deleted.</echo>
-         <echo>******************************************</echo>
-       </else>
-       </if>
-     </target>
 
      <!--
       add.jdbc.pools configures the connection pools defined in the
@@ -694,22 +543,6 @@
      -->
      <target name= "modify.jdbc.resources" depends="drop.jdbc.resources, add.jdbc.resources, restart.server"/>
 
-     <target name="copy.db2.jars" if="using.db2.type2">
-       <copy todir="${server.domain}/lib/ext" overwrite="yes">
-         <fileset dir="${jdbc.lib.class.path}">
-           <include name="db2*"/>
-         </fileset>
-       </copy>
-     </target>
-
-     <target name="delete.db2.jars" unless="using.db2.type2">
-       <delete quiet="true">
-         <fileset dir="${server.domain}/lib/ext">
-           <include name="db2*"/>
-         </fileset>
-       </delete>
-     </target>
-
      <!--
         add.jdbc.resources configures the JNDI resources used by cts to
         the correct connection pool as defined in the build.properties file.
@@ -719,22 +552,6 @@
      -->
      <target name="add.jdbc.resources" depends="configPlatform" if="create.jdbc.pools.prop">
 
-        <antcall target="copy.db2.jars"/>
-        <antcall target="delete.db2.jars"/>
-
-<!-- 
-  Since the get command is broken (issue tracker bug id 7151) we need to use
-  our regular expression hack to set the extension directories while the server
-  is down. If we modify the domain.xml disk file while the server is up, the
-  server process can overwrite our changes to the domain.xml file. See
-  set.ext.dirs target below to see the hack.  We now call these two targets from
-  javaee_vi.xml's config.vi target before the server is started.  Seems to do
-  the trick.  This code can be reverted once they fix bug ID 7151.  We can go
-  back to using the get command.
-
-        <antcall target="reset.ext.dirs"/>
-        <antcall target="add.ext.dirs"/>
--->
         <antcall target="set" >
           <param name="set.value" value=" ${resources.dottedname.prefix}.jdbc-connection-pool.${use.jdbc.poolName}.max_pool_size=${use.jdbc.maxpoolsize}"/>
         </antcall>
@@ -803,11 +620,6 @@
       drop.jdbc.resources removes the JNDI resources used by cts.
      -->
      <target name="drop.jdbc.resources" depends="configPlatform" if="create.jdbc.pools.prop">
-
-         <!-- Batch TCK Tests -->
-        <!--<antcall target="delete-jdbc-resource" >
-          <param name="jndiName" value="jdbc/batch"/>
-         </antcall>-->
          
          <antcall target="delete-jdbc-resource" >
           <param name="jndiName" value="jdbc/orderDB"/>
@@ -856,7 +668,7 @@
        </if>
      </target>
 
- 
+
      <!-- 
        Convenience method to support configuring connector rars, resources, and pools.
      -->
@@ -871,79 +683,6 @@
      <target name="undeploy.all.rars.and.pools" >
        <ant antfile="connector.xml" target="undeploy.all.rars.and.pools">
        </ant>
-     </target>
- 
-
-     <!--
-       Enable all of the required JMS resources  used by cts.
-     -->
-     <target name="enable.jms" depends="configPlatform ">
-       <if>
-         <contains string="${javaee.level}" substring="full"/>
-       <then>
-         <echo message="****server.instance: ${server.instance}"/>
-         <if>
-           <equals arg1="${test.sa.jmsra}" arg2="true"/>
-         <then>
-           <ant antfile="./jmsra.xml" target="doJMSRAConfig"/>
-         </then>
-         <else>
-           <exec executable="${exec.asadmin}" >
-             <env key="AS_ADMIN_USER" value="${s1as.admin.user}"/>
-             <env key="AS_ADMIN_PASSWORDFILE" value="${password.file}"/>
-             <env key="AS_ADMIN_HOST" value="${s1as.admin.host}"/>
-             <env key="AS_ADMIN_PORT" value="${s1as.admin.port}"/>
-             <env key="AS_ADMIN_TARGET" value="${server.instance}"/>
-             <arg line="${exec.asadmin.part2}" />
-             <arg line=" --echo=true "/>
-             <arg line="multimode " />
-             <arg line="--file ${bin.dir}/xml/impl/${impl.vi}/templates/create.jms.template " />
-           </exec>
-         </else>
-         </if>
-       </then>
-       <else>
-         <echo>**********************************************</echo>
-         <echo>WEB PROFILE in use, JMS Resources NOT Created.</echo>
-         <echo>**********************************************</echo>
-       </else>
-       </if>
-     </target>
-
-     <!--
-       Disable all of the required JMS resources  used by cts.
-     -->
-     <target name="disable.jms" depends="configPlatform">
-       <if>
-         <contains string="${javaee.level}" substring="full"/>
-       <then>
-         <echo message="****server.instance: ${server.instance}"/>
-         <if>
-           <equals arg1="${test.sa.jmsra}" arg2="true"/>
-         <then>
-           <ant antfile="${bin.dir}/xml/impl/${impl.vi}/jmsra.xml" target="doJMSRAUnconfig"/>
-         </then>
-         <else>
-           <exec executable="${exec.asadmin}" >
-             <env key="AS_ADMIN_USER" value="${s1as.admin.user}"/>
-             <env key="AS_ADMIN_PASSWORDFILE" value="${password.file}"/>
-             <env key="AS_ADMIN_HOST" value="${s1as.admin.host}"/>
-             <env key="AS_ADMIN_PORT" value="${s1as.admin.port}"/>
-             <env key="AS_ADMIN_TARGET" value="${server.instance}"/>
-             <arg line="${exec.asadmin.part2}" />
-             <arg line=" --echo=true "/>
-             <arg line="multimode " />
-             <arg line="--file ${bin.dir}/xml/impl/${impl.vi}/templates/delete.jms.template " />
-           </exec>
-         </else>
-         </if>
-       </then>
-       <else>
-         <echo>**********************************************</echo>
-         <echo>WEB PROFILE in use, JMS Resources NOT Deleted.</echo>
-         <echo>**********************************************</echo>
-       </else>
-       </if>
      </target>
 
      <!--
@@ -980,10 +719,6 @@
      <target name="drop.custom.resource" depends="configPlatform">
         <exec executable="${exec.asadmin}" >
             <arg line="${exec.asadmin.part2}" />
-            <arg line=" --user ${admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${server.host}"/>
-            <arg line=" --port ${server.port}"/>
             <arg line=" delete-custom-resource"/>
             <arg line=" ${custom.resource.jndi.name}"/>
         </exec>
@@ -995,10 +730,6 @@
      <target name="add.custom.resource" depends="configPlatform">
         <exec executable="${exec.asadmin}" >
             <arg line="${exec.asadmin.part2}" />
-            <arg line=" --user ${admin.user}"/>
-            <arg line=" --passwordfile ${password.file}"/>
-            <arg line=" --host ${server.host}"/>
-            <arg line=" --port ${server.port}"/>
             <arg line=" create-custom-resource"/>
             <arg line=" --restype com.sun.ts.lib.deliverable.cts.resource.Dog"/>
             <arg line=" --factoryclass com.sun.ts.lib.deliverable.cts.resource.DogFactory"/>
@@ -1079,155 +810,6 @@
           <param name="instance.name" value=" ${server.instance}-config"/>
          </antcall>
      </target>
-
-     <!--
-          Install the required jaxr pool and resource
-     -->
-     <target name="add.jaxr" depends="configPlatform" >
-       <if>
-         <contains string="${javaee.level}" substring="full"/>
-       <then>
-         <antcall target="create-connector-connection-pool" >
-          <param name="rarName" value="jaxr-ra"/>
-          <param name="poolName" value="jaxr-pool-1"/>
-         </antcall>
-
-         <antcall target="create-connector-resource" >
-          <param name="poolName" value="jaxr-pool-1"/>
-          <param name="jndiName" value="eis/JAXR"/>
-         </antcall>
-       </then>
-       <else>
-         <echo>*******************************************************</echo>
-         <echo>WEB PROFILE in use, JAXR Resource and Pool NOT Created.</echo>
-         <echo>*******************************************************</echo>
-       </else>
-       </if>
-     </target>
-
-     <!--
-          Remove the required jaxr pool and resource
-     -->
-     <target name="drop.jaxr" depends="configPlatform">
-       <if>
-         <contains string="${javaee.level}" substring="full"/>
-       <then>
-         <antcall target="delete-connector-resource" >
-          <param name="jndiName" value="eis/JAXR"/>
-         </antcall>
-
-         <antcall target="delete-connector-connection-pool" >
-          <param name="poolName" value="jaxr-pool-1"/>
-         </antcall>
-       </then>
-       <else>
-         <echo>*******************************************************</echo>
-         <echo>WEB PROFILE in use, JAXR Resource and Pool NOT Created.</echo>
-         <echo>*******************************************************</echo>
-       </else>
-       </if>
-     </target>
-
-
-    <!-- revisit these values for V3. -->
-    <target name="set.ext.dirs.value.mac" if="isMac">
-      <property name="default.ext.dirs" value="$$\{com.sun.aas.javaRoot\}/lib/ext$\{path.separator\}$$\{com.sun.aas.javaRoot\}/jre/lib/ext$$\{path.separator\}$$\{com.sun.aas.instanceRoot\}/lib/ext$$\{path.separator\}$$\{com.sun.aas.installRoot\}/lib/jdbcdrivers$$\{path.separator\}$$\{com.sun.aas.installRoot\}/../javadb/lib"/>
-    </target>
-
-    <target name="set.ext.dirs.value.non.mac" unless="isMac">
-      <property name="default.ext.dirs" value="$$\{com.sun.aas.javaRoot\}/lib/ext$\{path.separator\}$$\{com.sun.aas.javaRoot\}/jre/lib/ext$$\{path.separator\}$$\{com.sun.aas.instanceRoot\}/lib/ext$$\{path.separator\}$$\{com.sun.aas.installRoot\}/lib/jdbcdrivers$$\{path.separator\}$$\{com.sun.aas.installRoot\}/../javadb/lib"/>      
-    </target>
-
-
-    <!--
-      reset.ext.dirs Sets the S1AS extension directory property
-      back to it's original value as defined by the default.ext.dirs
-      property.
-    -->
-    <target name="reset.ext.dirs" depends="set.ext.dirs.value.mac, set.ext.dirs.value.non.mac"
-            unless="using.db2.type2">
-      <antcall target="set.ext.dirs">
-        <param name="ext.dirs.to.use" value="${default.ext.dirs}"/>
-      </antcall>
-    </target>
-
-    <!--
-      add.ext.dirs Add the extension directories defined by
-      the s1as.db.ext.dirs property in the ts.jte file to the
-      S1AS extension directory.  This is currently used to allow
-      CTS to run against S1AS using a type 2 DB driver.  Currently
-      our only type 2 driver is DB2.
-    -->
-    <target name="add.ext.dirs" depends="set.ext.dirs.value.mac, set.ext.dirs.value.non.mac"
-            if="db2.props.set">
-      <antcall target="set.ext.dirs">
-        <param name="ext.dirs.to.use" value="${default.ext.dirs}$$\{path.separator\}${s1as.db.ext.dirs}"/>
-      </antcall>
-    </target>
-
-    <!--
-      set.ext.dirs sets the extension directory value for S1AS.
-      The value is passed as the ext.dirs.to.use param.  This
-      task is called by add.ext.dirs and reset.ext.dirs.
-    -->
-    <target name="set.ext.dirs">
-
-      <property name ="domain.file"
-                value="${server.home}/config/domain.xml"/>
-      <loadfile property="domain.file.contents" srcfile="${domain.file}"/>
-      <propertyregex property="ext.dir.not.found"
-                     input="${domain.file.contents}"
-                     regexp="&lt;jvm-options>-Djava.ext.dirs=(.*)&lt;/jvm-options>"
-                     replace="&lt;jvm-options>-Djava.ext.dirs=${ext.dirs.to.use}&lt;/jvm-options>"
-                     defaultvalue="true"/>
-      <if>
-        <istrue value="${ext.dir.not.found}"/>
-      <then>
-        <echo>Extension directory does not match default, so not setting.</echo>
-      </then>
-      <else>
-        <echo>Extension directory found.</echo>
-        <echo>  Extension directory set to: ${ext.dirs.to.use}</echo>
-        <copy file="${domain.file}" tofile="${domain.file}.original" failonerror="false"/>
-        <echo message="${ext.dir.not.found}" file="${domain.file}"/>
-        <echo>${domain.file} written to disk.</echo>
-      </else>
-      </if>
-
-
-<!-- Currently broken in V3.  See bug ID 7151 in issues tracker.  Add back secodn dash to
-     user, passworfile, host and port when working, sicne the double -'s are not allowed in XML
-     comments.
-
-         <exec executable="${exec.asadmin}" outputproperty="current.props">
-            <arg line="${exec.asadmin.part2}"/>
-            <arg line="-user ${admin.user}"/>
-            <arg line="-passwordfile ${password.file}"/>
-            <arg line="-host ${server.host}"/>
-            <arg line="-port ${server.port}"/>
-            <arg line="get"/>
-            <arg line="${server.instance}-config.java-config.jvm_options"/>
-         </exec>
-         <string this="${current.props}" method="indexOf" return="index.of.ext.prop" arg1="${ext.dir.prop}"/>
-         <string this="${current.props}" method="substring" return="ext.dirs" arg1="${index.of.ext.prop}"/>
-         <string this="${ext.dirs}" method="indexOf" return="index.of.last.comma" arg1=","/>
-         <string this="${ext.dirs}" method="length" return="ext.dirs.length"/>
-         <condition property="end.index" value="${ext.dirs.length}">
-           <equals arg1="${index.of.last.comma}" arg2="-1"/>
-         </condition>
-         <property name="end.index" value="${index.of.last.comma}"/>
-         <string this="${ext.dirs}" method="substring" return="ext.dir" arg1="${start.index}" arg2="${end.index}"/>
-         <echo message="Current Extension Directories: &quot;${ext.dir}&quot;"/>
-         <property name="new.ext.dirs" value="${ext.dir.prop}${ext.dirs.to.use}"/>
-         <echo message="New Extension Directories: &quot;${new.ext.dirs}&quot;"/>
-         <antcall target="delete-jvm-options">
-           <param name="jvm.options" value="${ext.dir.prop}${ext.dir}"/>
-         </antcall>
-         <antcall target="create-jvm-options" >
-           <param name="jvm.options" value="${new.ext.dirs}"/>
-         </antcall>
--->
-    </target>
 
     <property name="ant.opts" value=""/>
     <property name="run.client.args" value=""/>
@@ -1317,7 +899,7 @@
        <antcall target="delete.cert" >
           <param name="cert.alias" value="RI_CERT" />
           <param name="trustStore" 
-             value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
+             value="${s1as.domain}/config/cacerts.jks"/>
           <param name="trustStore.password" value="${keystore.password}" />
        </antcall>
      </target>
@@ -1331,7 +913,7 @@
             <param name="cert.file" value="${cert.file}" />
             <param name="trustStore.password" value="${keystore.password}" />
             <param name="trustStore" 
-                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
+                   value="${s1as.domain}/config/cacerts.jks"/>
         </antcall>
 
          <antcall target="add.cts.cert.into.nss.databases"/>
@@ -1378,7 +960,7 @@
             <param name="cert.file" value="${ts.home}/tmp/ri_server_cert.file" />
             <param name="trustStore.password" value="${keystore.password}" />
             <param name="trustStore"
-                   value="${s1as.domain.dir}/${s1as.domain.name}/config/cacerts.jks"/>
+                   value="${s1as.domain}/config/cacerts.jks"/>
          </antcall>
 
          <!--
@@ -1388,7 +970,7 @@
             <param name="cert.alias" value="${server.cert.alias}" />
             <param name="cert.file" value="${ts.home}/tmp/vi_server_cert.file" />
             <param name="trustStore"
-                  value="${s1as.domain.dir}/${s1as.domain.name}/config/keystore.jks"/>
+                  value="${s1as.domain}/config/keystore.jks"/>
             <param name="trustStore.password" value="${keystore.password}" />
         </antcall>
 
@@ -1524,26 +1106,6 @@
          <copy file="${bin.dir}/ts.java.security" 
                tofile="${s1as.domain}/${server.config.dir}/ts.java.security" overwrite="yes" />
 
-         <antcall target="create-one-jvm-option" >
-             <param name="jvm.options" value=" -Djava.security.properties=${server.domain}/${server.config.dir}/ts.java.security"/>
-         </antcall>
-
-         <antcall target="create-one-jvm-option" >
-             <param name="jvm.options" value=" -Dschema.file.location=${schema.file.location}"/>
-         </antcall>
-
-         <antcall target="create-one-jvm-option" >
-             <param name="jvm.options" value=" -Dlog.file.location=${log.file.location}"/>
-         </antcall>
-
-         <antcall target="create-one-jvm-option" >
-          <param name="jvm.options" value=" -Dprovider.configuration.file=${provider.configuration.file}"/>
-         </antcall>
-
-         <antcall target="create-jvm-options" >
-          <param name="jvm.options" value=" -Djava.security.manager"/>
-         </antcall>
-
     </target>
 
 
@@ -1571,28 +1133,6 @@
          <echo message="Removing jaspic security property file: ${s1as.domain}/${server.config.dir}/ts.java.security" />
         <delete file="${s1as.domain}/${server.config.dir}/ts.java.security" quiet="true"/>
 
-        <antcall target="delete-one-jvm-option" >
-            <param name="jvm.options" value=" -Djava.security.properties=${s1as.asenv.loc}/ts.java.security"/>
-        </antcall>
-
-        <antcall target="delete-one-jvm-option" >
-            <param name="jvm.options" value=" -Dlog.file.location=${log.file.location}"/>
-        </antcall>
-
-        <antcall target="delete-one-jvm-option" >
-            <param name="jvm.options" value=" -Dprovider.configuration.file=${provider.configuration.file}"/>
-        </antcall>
-    </target>
-
-    <target name="enable.security.manager" depends="configPlatform">
-	  <antcall target="create-jvm-options" >
-        	<param name="jvm.options" value=" -Djava.security.manager"/>
-          </antcall>
-    </target>
-    <target name="disable.security.manager" depends="configPlatform">
-           <antcall target="delete-jvm-options" >
-                <param name="jvm.options" value=" -Djava.security.manager"/>
-           </antcall>
     </target>
 
     <target name="start.javadb.asadmin"  depends="configPlatform">

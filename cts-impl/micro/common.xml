@@ -70,6 +70,7 @@
            <property name="payara.micro.jar" value="${ts.home}/../payara-micro.jar"/>
            <property name="exec.asadmin" value="${cli.path}" />
            <property name="exec.asadmin.part2" value="" />
+           <property name="micro.jvm.options" value="${vi.jvm.options}" />
            <property name="exec.imqusermgr" value="${imqbin.loc}/imqusermgr" />
            <property name="exec.imqusermgr.part2" value="" />
            <property name="cert.file" value="${bin.dir}/certificates/cts_cert"/>
@@ -222,13 +223,10 @@
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
         <property name="micro.jvm.options" value=""/>
-        <property name="micro.runtime.options" value=""/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <jvmarg line=" ${micro.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
-            <arg line=" --sslport 8181"/>
-            <arg line=" ${micro.runtime.options}"/>
         </java>
         <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
         <sleep seconds="${server.start.delay.secs}"/>
@@ -250,12 +248,9 @@
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
         <property name="micro.jvm.options" value=""/>
-        <property name="additional.micro.options" value=""/>
         <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
-            <arg line=" --sslport 8181"/>
-            <arg line=" ${additional.micro.options}"/>
         </java>
         <echo message=" ...Waiting for server to be up ...(sleeping for ${server.start.delay.secs} seconds) " />
         <sleep seconds="${server.start.delay.secs}"/>
@@ -939,12 +934,17 @@
     -->
     <target name="create.jpa.vm.options" depends="configPlatform">
         <antcall target="stop-domain"/>
-        <antcall target="start.appserver">
-            <param name="micro.jvm.options" value=" -Dlog.file.location=${log.file.location}"/>
-        </antcall>
+        <property name="micro.jvm.options" value="${micro.jvm.options}-Dlog.file.location=${log.file.location}"/>
+        <antcall target="start.appserver"/>
     </target>
 
     <target name="delete.jpa.vm.options" depends="configPlatform">
+        <!-- First remove xxx;-Dprop.to.remove
+        <propertyregex property="micro.jvm.options"
+                       input="${micro.jvm.options}"
+                       regexp="-Dlog.file.location=(.*)$$\{path.separator\}"
+                       replace=""
+                       defaultvalue="true"/>
         <antcall target="restart.server"/>
     </target>
 
