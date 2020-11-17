@@ -113,7 +113,9 @@
    <!--
         Configure PE or the DAS(SE/EE) for CTS
    -->
-   <target name="config.das" if="testingAgainstDAS" depends="use.jms,no.jms">
+   <target name="config.das" if="testingAgainstDAS">
+       <property name="configTarget" value="config.s1as"/>
+       <property name="cleanTarget" value="clean.s1as"/>
        <echo message="****Configuring the DAS/PE *****" />
        <ant antfile="s1as.xml" target="${configTarget}"/>
    </target>
@@ -121,7 +123,9 @@
    <!--
         Configure a remote instance(SE/EE) for CTS
    -->
-   <target name="config.remoteInstance" if="testingAgainstRemoteInstance" depends="use.jms,no.jms">
+   <target name="config.remoteInstance" if="testingAgainstRemoteInstance">
+       <property name="configTarget" value="config.s1as"/>
+       <property name="cleanTarget" value="clean.s1as"/>
        <echo message="****Configuring a remote instance (SE/EE) *****" />
        <ant antfile="sjsas_ee.xml" dir="${bin.dir}/xml" target="config.remoteInstance">
           <property name="configTarget" value="${configTarget}"/>
@@ -239,20 +243,6 @@
    <target name="disable.tx.interop.remoteInstance"  if="testingAgainstRemoteInstance">
        <ant antfile="sjsas_ee.xml" dir="${bin.dir}/xml" target="disable.tx.interop"/>
    </target>
-
-   <!-- Determine the S1AS target to be executed (with JMS)  -->
-    <target name="use.jms" if="useJms">
-        <echo message="*** Configuring/Cleaning S1AS including JMS ***" />
-         <property name="configTarget" value="configall.s1as"/>
-         <property name="cleanTarget" value="cleanall.s1as"/>
-    </target>
-
-   <!-- Determine the S1AS target to be executed (without JMS)  -->
-    <target name="no.jms" if="skip.jms">
-        <echo message="*** Configuring/Cleaning S1AS WITHOUT JMS ***" />
-         <property name="configTarget" value="config.s1as"/>
-         <property name="cleanTarget" value="clean.s1as"/>
-    </target>
 
     <target name="delete.cts.ext.jars">
        <delete file="${extension.dir}/cts.jar" quiet="true"/>
