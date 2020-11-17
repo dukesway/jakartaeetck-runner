@@ -23,7 +23,6 @@
     <import file="./ts.common.props.xml" optional="true"/>
     <import file="../../../../../../bin/xml/ts.common.props.xml" optional="true"/>
 
-   <property name="enable.jms" value="true"/>
    <property name="create.jdbc.pools" value="true"/>
 
 
@@ -325,15 +324,6 @@
         <condition property="testingAgainstCluster">
           <equals arg1="${sjsas.env.type}" arg2="cluster" casesensitive="true" trim="true"/>
         </condition>
-   
-        <condition property="useJms">
-           <istrue value="${enable.jms}"/>
-        </condition >
-        <condition property="skip.jms">
-           <not>
-           <istrue value="${enable.jms}"/>
-           </not>
-        </condition >
 
         <condition property="create.jdbc.pools.prop">
           <istrue value="${create.jdbc.pools}"/>
