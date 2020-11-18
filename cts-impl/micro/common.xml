@@ -222,7 +222,7 @@
     -->
     <target name="start.appserver.unix" depends="configPlatform" if="isUnixPlatform">
         <echo message="Starting Payara Micro with the following JVM options: ${vi.jvm.options}"/>
-        <java fork="true" jar="${payara.micro.jar}" spawn="true" maxmemory="4096m">
+        <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <jvmarg line=" ${vi.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}/logs/server.log"/>
@@ -247,7 +247,7 @@
     -->
     <target name="start.appserver.win" depends="configPlatform" if="isWindowsPlatform">
         <echo message="Starting Payara Micro with the following JVM options: ${vi.jvm.options}"/>
-        <java fork="true" jar="${payara.micro.jar}" spawn="true" maxmemory="4096m">
+        <java fork="true" jar="${payara.micro.jar}" spawn="true">
             <jvmarg line=" ${vi.jvm.options}"/>
             <arg line=" --rootdir ${javaee.home}"/>
             <arg line=" --logtofile ${javaee.home}\logs\server.log"/>
