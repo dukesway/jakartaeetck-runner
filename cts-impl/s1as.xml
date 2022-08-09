@@ -1578,10 +1578,10 @@
         <echo message="Overwriting create.jacc.vm.options and delete.jacc.vm.options targets of cts_home/jakartaeetck/bin/xml/impl/glassfish/common.xml since RunCTS#enableJacc() is hardcoded to run this over any VI file"/>
         <replace file="${bin.dir}/xml/impl/glassfish/common.xml"
                   token="-Dvendor.jakarta.security.jacc.policy.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyProvider"
-                  value="-Dvendor.jakarta.security.jacc.policy.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+                  value="-Dvendor.jakarta.security.jacc.policy.provider=fish.payara.security.jacc.provider.PolicyProviderImpl"/>
          <replace file="${bin.dir}/xml/impl/glassfish/common.xml"
                   token="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=com.sun.enterprise.security.jacc.provider.SimplePolicyConfigurationFactory"
-                  value="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyConfigurationFactory"/>
+                  value="-Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=fish.payara.security.jacc.provider.PolicyConfigurationFactoryImpl"/>
      </target>
 
 </project>

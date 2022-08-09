@@ -1422,7 +1422,7 @@
          </antcall>
 
          <antcall target="create-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=fish.payara.security.jacc.provider.PolicyProviderImpl"/>
          </antcall>
 
          <antcall target="create-jvm-options" >
@@ -1430,7 +1430,7 @@
          </antcall>
 
          <antcall target="create-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyConfigurationFactory "/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=fish.payara.security.jacc.provider.PolicyConfigurationFactoryImpl "/>
          </antcall>
 
          <antcall target="create-one-jvm-option" >
@@ -1459,7 +1459,7 @@
          </antcall>
         
          <antcall target="delete-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=org.glassfish.exousia.modules.locked.SimplePolicyProvider"/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.policy.provider=fish.payara.security.jacc.provider.PolicyProviderImpl"/>
          </antcall>
 
          <antcall target="delete-jvm-options" >
@@ -1467,7 +1467,7 @@
          </antcall>
 
          <antcall target="delete-jvm-options" >
-          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=org.glassfish.exousia.modules.locked.SimplePolicyConfigurationFactory "/>
+          <param name="jvm.options" value=" -Dvendor.jakarta.security.jacc.PolicyConfigurationFactory.provider=fish.payara.security.jacc.provider.PolicyConfigurationFactoryImpl "/>
          </antcall>
 
          <antcall target="delete-one-jvm-option" >
